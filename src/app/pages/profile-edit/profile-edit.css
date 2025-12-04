@@ -1,0 +1,182 @@
+.edit-container {
+  min-height: 100vh;
+  padding: 100px 20px 40px; /* Top padding para navbar */
+  background-color: #f4f6f8;
+  display: flex;
+  justify-content: center;
+}
+
+.edit-card {
+  background: white;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 40px;
+}
+
+.header h2 {
+  color: var(--unifor-blue);
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* --- FOTO DE PERFIL --- */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Botão da Câmera */
+.camera-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--unifor-orange);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 3px solid white;
+  transition: transform 0.2s;
+}
+
+.camera-btn:hover {
+  transform: scale(1.1);
+}
+
+.avatar-hint {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 10px;
+}
+
+/* --- FORMULÁRIO --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus {
+  border-color: var(--unifor-blue);
+  outline: none;
+}
+
+.input-field.disabled {
+  background-color: #f9f9f9;
+  color: #888;
+  cursor: not-allowed;
+}
+
+textarea.input-field {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 5px;
+}
+
+/* --- BOTÕES --- */
+.actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid #ddd;
+  color: #666;
+  padding: 10px 25px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn-save {
+  background: var(--unifor-blue);
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 59, 113, 0.2);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  background: #002a52;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr; /* Coluna única no mobile */
+  }
+  .full-width {
+    grid-column: span 1;
+  }
+}

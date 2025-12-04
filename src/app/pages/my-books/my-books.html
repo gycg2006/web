@@ -1,0 +1,107 @@
+<app-navbar></app-navbar>
+
+<div class="main-layout">
+  
+  <!-- BARRA LATERAL (Igual à Home para consistência) -->
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="avatar-circle">
+        <img src="images/moema.png" alt="Perfil">
+      </div>
+      <h3>Aluno Unifor</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+    </div>
+    
+    <nav class="side-menu">
+      <a routerLink="/home" class="menu-item">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      <a routerLink="/my-books" class="menu-item active"> <!-- Ativo aqui -->
+        <i class="fa-solid fa-book-open"></i> Meus Livros
+      </a>
+      <a href="/lists" class="menu-item">
+        <i class="fa-solid fa-list"></i> Listas
+      </a>
+      <a href="/friends" class="menu-item">
+        <i class="fa-solid fa-user-group"></i> Amigos
+      </a>
+    </nav>
+  </aside>
+
+  <!-- CONTEÚDO DA ESTANTE -->
+  <main class="library-content">
+    
+    <div class="library-header">
+      <h2>Minha Estante</h2>
+      
+      <!-- Abas de Navegação da Estante -->
+      <div class="library-tabs">
+        <button [class.active]="activeTab === 'lendo'" (click)="setTab('lendo')">
+          Lendo <span>{{ reading.length }}</span>
+        </button>
+        <button [class.active]="activeTab === 'quero-ler'" (click)="setTab('quero-ler')">
+          Quero Ler <span>{{ wantToRead.length }}</span>
+        </button>
+        <button [class.active]="activeTab === 'lidos'" (click)="setTab('lidos')">
+          Lidos <span>{{ read.length }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GRID DE LIVROS (Varia conforme a aba) -->
+    
+    <!-- 1. LENDO AGORA -->
+    <div *ngIf="activeTab === 'lendo'" class="books-grid fade-in">
+      <div class="empty-state" *ngIf="reading.length === 0">
+        <i class="fa-solid fa-book-open"></i>
+        <p>Você não está lendo nada no momento.</p>
+      </div>
+
+      <div class="book-card" *ngFor="let book of reading" [routerLink]="['/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+          <!-- Barra de Progresso Fictícia -->
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 45%"></div>
+          </div>
+        </div>
+        <div class="book-info">
+          <h3>{{ book.volumeInfo.title }}</h3>
+          <p class="status-text">45% concluído</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. QUERO LER -->
+    <div *ngIf="activeTab === 'quero-ler'" class="books-grid fade-in">
+      <div class="book-card" *ngFor="let book of wantToRead" [routerLink]="['/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+          <div class="ribbon"><i class="fa-solid fa-bookmark"></i></div>
+        </div>
+        <div class="book-info">
+          <h3>{{ book.volumeInfo.title }}</h3>
+          <p class="author">{{ book.volumeInfo.authors?.join(', ') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. LIDOS -->
+    <div *ngIf="activeTab === 'lidos'" class="books-grid fade-in">
+      <div class="book-card" *ngFor="let book of read" [routerLink]="['/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+          <div class="rating-badge">
+            <i class="fa-solid fa-star"></i> 5
+          </div>
+        </div>
+        <div class="book-info">
+          <h3>{{ book.volumeInfo.title }}</h3>
+          <p class="author">Lido em Out 2024</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>

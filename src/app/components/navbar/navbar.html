@@ -1,0 +1,36 @@
+<nav class="navbar" [class.navbar-hidden]="isHidden">
+  <div class="nav-container">
+    
+    <div class="nav-brand" routerLink="/home">
+      <div style="width: 100px; color: white;">
+        <app-logo></app-logo>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a routerLink="/home" routerLinkActive="active">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      <a href="/mybooks"  routerLinkActive="active">
+        <i class="fa-solid fa-book-open"></i> Meus Livros
+      </a>
+      <a href="/community" class="inactive">
+        <i class="fa-solid fa-users"></i> Comunidade
+      </a>
+    </div>
+
+    <div class="nav-profile">
+      <div class="user-info" routerLink="/profile" style="cursor: pointer;">
+        <span class="user-name">Aluno</span>
+        <div class="avatar-circle">
+          <img src="/images/moema.png" alt="Avatar"> 
+        </div>
+      </div>
+      
+      <button class="btn-logout" (click)="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+
+  </div>
+</nav>

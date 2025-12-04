@@ -1,0 +1,239 @@
+<app-navbar></app-navbar>
+
+<div class="main-layout">
+  
+  <!-- ==========================================
+       COLUNA ESQUERDA (MENU PADRONIZADO)
+       ========================================== -->
+  <aside class="sidebar-left">
+    
+    <div class="profile-card">
+      <div class="avatar-circle">
+        <img src="images/moema.png" alt="Perfil">
+      </div>
+      <h3>Aluno Unifor</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+    </div>
+    
+    <nav class="side-menu">
+      <!-- Início agora é um link normal, ativo porque estamos na Home -->
+      <a routerLink="/home" class="active" style="cursor: pointer;">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      
+      <!-- "Leia-me" SAIU DAQUI -->
+
+      <a routerLink="/mybooks" style="cursor: pointer;">
+        <i class="fa-solid fa-book-open"></i> Meus Livros
+      </a>
+      <a routerLink="/lists" style="cursor: pointer;">
+        <i class="fa-solid fa-list"></i> Listas
+      </a>
+      <a href="/friends"><i class="fa-solid fa-user-group"></i> Amigos</a>
+    </nav>
+  </aside>
+
+  <!-- ==========================================
+       COLUNA CENTRAL (CONTEÚDO)
+       ========================================== -->
+  <main class="feed-content">
+    
+    <!-- NOVA BARRA DE ABAS DA HOME -->
+    <div class="home-tabs-bar">
+      <button (click)="setTab('feed')" [class.active]="activeTab === 'feed'">
+        Feed 
+      </button>
+      <button (click)="setTab('catalogo')" [class.active]="activeTab === 'catalogo'">
+        Leia-me 
+      </button>
+    </div>
+
+    <!-- ::::: CONTEÚDO 1: FEED SOCIAL ::::: -->
+    <div *ngIf="activeTab === 'feed'" class="tab-content fade-in">
+      
+      <div class="create-post">
+        <img src="images/moema.png" class="mini-avatar" alt="Eu">
+        <input type="text" placeholder="Qual livro você leu recentemente?">
+        <button class="btn-primary-small">Postar</button>
+      </div>
+
+      <h3 class="section-title">Atualizações da Comunidade</h3>
+
+      <div *ngIf="books.length === 0" style="text-align: center; padding: 20px; color: #999;">
+        <i class="fa-solid fa-circle-notch fa-spin"></i> Carregando feed...
+      </div>
+
+      <div class="posts-list">
+        <div class="post-card" *ngFor="let book of books">
+          <div class="post-header">
+            <div class="user-info">
+              <div class="mini-avatar-bg"></div>
+              <div>
+                <span class="username">Estudante de TI</span>
+                <span class="action">avaliou um livro</span>
+                <span class="time">há 2h</span>
+              </div>
+            </div>
+            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+
+          <div class="post-body">
+            <div class="book-cover-small" 
+                 [routerLink]="['/book', book.id]" 
+                 style="cursor: pointer;"
+                 title="Ver detalhes">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'" alt="Capa">
+            </div>
+
+            <div class="book-review">
+              <h4 [routerLink]="['/book', book.id]" style="cursor: pointer;">
+                {{ book.volumeInfo.title }}
+              </h4>
+              <p class="book-author">de {{ book.volumeInfo.authors?.join(', ') }}</p>
+              <p class="review-text">
+                "Uma leitura fundamental para a área. O conteúdo é denso mas muito bem explicado. Recomendo para quem está pagando as cadeiras do ciclo básico!"
+              </p>
+            </div>
+          </div>
+
+          <div class="post-actions">
+            <button><i class="fa-regular fa-heart"></i> Curtir</button>
+            <button><i class="fa-regular fa-comment"></i> Comentar</button>
+            <button><i class="fa-solid fa-bookmark"></i> Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ::::: CONTEÚDO 2: LEIA-ME (CATÁLOGO) ::::: -->
+    <div *ngIf="activeTab === 'catalogo'" class="netflix-container fade-in">
+      
+      <div class="catalog-header">
+        <h2 class="netflix-main-title">Explorar Acervo</h2>
+        <div class="filter-pills">
+          <button class="pill active">Tudo</button>
+          <button class="pill">Acadêmico</button>
+          <button class="pill">Literatura</button>
+          <button class="pill">TCCs</button>
+          <button class="pill">Artigos</button>
+        </div>
+      </div>
+
+      <!-- Categoria 1: TI -->
+      <div class="category-row">
+        <h4 class="row-title">Tecnologia & Inovação</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('ti', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-ti">
+            <div class="carousel-item" *ngFor="let book of booksTI" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('ti', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Categoria 2: Saúde -->
+      <div class="category-row">
+        <h4 class="row-title">Ciências da Saúde</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('saude', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-saude">
+            <div class="carousel-item" *ngFor="let book of booksSaude" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('saude', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Categoria 3: Ficção -->
+      <div class="category-row">
+        <h4 class="row-title">Mundos Fantásticos (Ficção)</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('ficcao', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-ficcao">
+            <div class="carousel-item" *ngFor="let book of booksFiccao" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('ficcao', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Categoria 4: Direito -->
+      <div class="category-row">
+        <h4 class="row-title">Ciências Jurídicas</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('direito', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-direito">
+            <div class="carousel-item" *ngFor="let book of booksDireito" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('direito', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Categoria 5: História -->
+      <div class="category-row">
+        <h4 class="row-title">História e Sociedade</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('historia', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-historia">
+            <div class="carousel-item" *ngFor="let book of booksHistoria" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('historia', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Categoria 6: Romance -->
+      <div class="category-row">
+        <h4 class="row-title">Romance e Literatura</h4>
+        <div class="carousel-wrapper">
+          <button class="scroll-btn left" (click)="scrollCarousel('romance', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="carousel-container" id="carousel-romance">
+            <div class="carousel-item" *ngFor="let book of booksRomance" [routerLink]="['/book', book.id]">
+              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'">
+            </div>
+          </div>
+          <button class="scroll-btn right" (click)="scrollCarousel('romance', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       COLUNA DIREITA (TRENDING)
+       ========================================== -->
+  <aside class="sidebar-right">
+    
+    <div class="trending-box">
+      <h4>Populares na Unifor</h4>
+      <div class="mini-grid">
+        <div class="mini-cover" 
+             *ngFor="let book of books | slice:0:4"
+             [routerLink]="['/book', book.id]"
+             style="cursor: pointer;">
+          <img [src]="book.volumeInfo.imageLinks?.smallThumbnail || 'assets/no-cover.png'">
+        </div>
+      </div>
+    </div>
+
+    <div class="trending-box">
+      <h4>Leitores Ativos</h4>
+      <div class="active-users">
+        <div class="user-dot" style="background: #FF5722;"></div>
+        <div class="user-dot" style="background: #4CAF50;"></div>
+        <div class="user-dot" style="background: #2196F3;"></div>
+        <div class="user-dot" style="background: #9C27B0;"></div>
+      </div>
+    </div>
+
+  </aside>
+
+</div>

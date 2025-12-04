@@ -1,0 +1,606 @@
+/* Layout Base (Consistente com Home) */
+.main-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 90px;
+}
+
+/* Sidebar Esquerda (Sticky) */
+.sidebar-left {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+.profile-card {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.avatar-circle img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--unifor-blue);
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.side-menu a {
+  display: block;
+  padding: 12px 20px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 30px;
+  margin-bottom: 5px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.side-menu a:hover, .side-menu a.active {
+  background-color: #eef4fb;
+  color: var(--unifor-blue);
+}
+
+.side-menu i { margin-right: 10px; width: 20px; }
+
+/* --- CONTEÚDO CENTRAL --- */
+.friends-header {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-text h2 {
+  color: var(--unifor-blue);
+  margin-bottom: 5px;
+}
+
+.header-text p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+/* Botão de Adicionar Amigo */
+.btn-add-friend {
+  background: var(--unifor-blue);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-add-friend:hover {
+  transform: scale(1.1);
+  background-color: #002a52;
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+  max-width: 300px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  background: #f9f9f9;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+  border-color: var(--unifor-blue);
+  background: white;
+}
+
+/* Grid de Amigos */
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.friend-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.friend-card:hover {
+  transform: translateY(-5px);
+}
+
+.friend-avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.friend-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+  background-color: #ccc;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.status-dot.online {
+  background-color: #4CAF50; /* Verde Online */
+}
+
+.friend-info h3 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.friend-info .username {
+  font-size: 0.85rem;
+  color: #888;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.friend-info .course {
+  font-size: 0.8rem;
+  color: var(--unifor-blue);
+  margin-bottom: 5px;
+}
+
+.friend-info .status-text {
+  font-size: 0.75rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 15px;
+  height: 20px; /* Altura fixa para alinhar botões */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto; /* Empurra para baixo */
+}
+
+.btn-icon {
+  background: #f0f2f5;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--unifor-blue);
+  color: white;
+}
+
+.btn-icon.delete:hover {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* Sidebar Direita (Sugestões) */
+.sidebar-right {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+.suggestions-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.suggestions-box h4 {
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #444;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sug-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.sug-info {
+  flex-grow: 1;
+}
+
+.sug-info strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.sug-info span {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.btn-add {
+  background: #eef4fb;
+  color: var(--unifor-blue);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-add:hover {
+  background: var(--unifor-blue);
+  color: white;
+}
+
+.view-more {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.view-more a {
+  font-size: 0.85rem;
+  color: var(--unifor-blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.3;
+}
+
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sidebar-left, .sidebar-right { display: none; }
+}
+
+/* --- MODAL GERAL (Reutilizável) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: scaleUp 0.2s;
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
+.modal-header, .modal-header-center {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3, .modal-header-center h3 { 
+  color: var(--unifor-blue); 
+  margin: 0; 
+  font-size: 1.2rem;
+}
+
+.modal-header-center {
+  justify-content: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+/* --- MODAL DE EXCLUSÃO --- */
+.delete-modal {
+  width: 350px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.modal-body-center {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.delete-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.modal-body-center p {
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.warning-text {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.modal-footer-center {
+  padding: 15px;
+  background: #f9f9f9;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-cancel-flat {
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel-flat:hover {
+  background: #f0f0f0;
+}
+
+.btn-delete-confirm {
+  background: #ffebee;
+  color: #d32f2f; /* Vermelho Alerta */
+  border: 1px solid #ffcdd2;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete-confirm:hover {
+  background: #d32f2f;
+  color: white;
+  border-color: #d32f2f;
+}
+
+/* --- MODAL DE ADICIONAR (Wide) --- */
+.wide-modal {
+  width: 500px;
+  max-width: 95%;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.search-bar-modal {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar-modal input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-search-modal {
+  background: var(--unifor-blue);
+  color: white;
+  border: none;
+  width: 50px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Lista de Resultados */
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-result-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.user-result-item:hover {
+  background-color: #f9f9f9;
+  border-color: var(--unifor-blue);
+}
+
+.user-result-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-result-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-result-info strong {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.user-result-info span {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.btn-send-request {
+  background: transparent;
+  border: 1px solid var(--unifor-blue);
+  color: var(--unifor-blue);
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-send-request:hover {
+  background: var(--unifor-blue);
+  color: white;
+}
+
+.btn-send-request.sent {
+  background: #e8f5e9;
+  border-color: #4CAF50;
+  color: #4CAF50;
+  cursor: default;
+}
+
+.hint-text {
+  text-align: center;
+  color: #999;
+  margin-top: 50px;
+  font-style: italic;
+}

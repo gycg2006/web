@@ -1,0 +1,40 @@
+/* Importando uma fonte parecida com a da Unifor (arredondada/moderna) */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+:root {
+  /* Paleta Inspirada na Unifor */
+  --unifor-blue: #003B71;     /* Azul escuro institucional */
+  --unifor-orange: #F48024;   /* Laranja para botões/destaque */
+  --bg-color: #f4f6f8;        /* Cinza bem claro para o fundo (não cansa a vista) */
+  --text-color: #333333;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Estilo padrão para Botões (já adiantando o trabalho) */
+.btn-primary {
+  background-color: var(--unifor-blue);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px; /* Bordas arredondadas estilo Unifor nova */
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #002a52; /* Azul um pouco mais escuro */
+}

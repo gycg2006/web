@@ -1,0 +1,211 @@
+<app-navbar></app-navbar>
+
+<div class="main-layout">
+  
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="avatar-circle">
+        <img src="images/moema.png" alt="Perfil">
+      </div>
+      <h3>Aluno Unifor</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+    </div>
+    
+    <nav class="side-menu">
+      <a routerLink="/home" class="menu-item">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      <a href="/mybooks"><i class="fa-solid fa-book-open"></i> Meus Livros</a>
+      <a routerLink="/lists" class="menu-item active">
+        <i class="fa-solid fa-list"></i> Listas
+      </a>
+      <a href="/friends" class="menu-item">
+        <i class="fa-solid fa-user-group"></i> Amigos
+      </a>
+    </nav>
+  </aside>
+
+  <main class="lists-content">
+    
+    <div class="lists-header">
+      <h2>Minhas Coleções</h2>
+      <button class="btn-create" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus"></i> Nova Lista
+      </button>
+    </div>
+
+    <div class="lists-grid">
+      <div class="list-wrapper" *ngFor="let list of myLists; let i = index">
+        
+        <!-- Cabeçalho Clicável -->
+        <div class="list-card" (click)="toggleList(i)" [class.expanded]="expandedListIndex === i">
+          
+          <div class="list-cover">
+            <img [src]="list.cover" alt="Capa">
+            <div class="list-count">{{ list.count }} livros</div>
+          </div>
+
+          <div class="list-info">
+            <h3>{{ list.title }}</h3>
+            <p>{{ list.description }}</p>
+            <div class="list-meta">
+              <span><i class="fa-solid fa-lock"></i> Privada</span>
+            </div>
+          </div>
+
+          <div class="list-arrow">
+            <i class="fa-solid fa-chevron-down" [class.rotate]="expandedListIndex === i"></i>
+          </div>
+        </div>
+
+        <!-- ÁREA EXPANDIDA -->
+        <div class="list-details" *ngIf="expandedListIndex === i">
+          
+          <div class="details-header">
+            <h4>Livros nesta lista</h4>
+            <!-- Botão para abrir busca -->
+            <button class="btn-add-small" (click)="openAddBookModal(i, $event)">
+              <i class="fa-solid fa-plus"></i> Adicionar Livro
+            </button>
+          </div>
+
+          <div class="books-in-list" *ngIf="list.books.length > 0; else emptyList">
+            <div class="mini-book-row" *ngFor="let book of list.books; let bIndex = index">
+              <img [src]="book.cover" class="tiny-cover">
+              <div class="mini-info">
+                <strong>{{ book.title }}</strong>
+                <span>{{ book.author }}</span>
+              </div>
+              <button class="btn-remove" (click)="removeBook(i, bIndex, $event)" title="Remover">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <ng-template #emptyList>
+            <p class="empty-msg">Esta lista está vazia. Adicione livros!</p>
+          </ng-template>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- MODAL 1: CRIAR NOVA LISTA -->
+<div class="modal-overlay" *ngIf="isCreateModalOpen">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Criar Nova Lista</h3>
+      <button class="close-btn" (click)="closeCreateModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Upload de Capa -->
+      <div class="cover-upload-section">
+        <!-- Container da Prévia -->
+        <div class="cover-preview-container" [class.has-image]="previewCover">
+          
+          <!-- Se NÃO tiver imagem: Mostra botão de upload animado -->
+          <label *ngIf="!previewCover" for="listCoverInput" class="upload-btn-initial">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Clique para enviar capa</span>
+          </label>
+
+          <!-- Se TIVER imagem: Mostra a imagem -->
+          <img *ngIf="previewCover" 
+               [src]="previewCover" 
+               class="cover-image" 
+               [style.transform]="'rotate(' + rotationAngle + 'deg)'">
+        </div>
+
+        <!-- Controles de Edição -->
+        <div class="edit-controls" *ngIf="previewCover">
+          <button type="button" class="control-btn" (click)="rotateCover(-90)" title="Girar Esquerda">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button type="button" class="control-btn" (click)="rotateCover(90)" title="Girar Direita">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+          <button type="button" class="control-btn" (click)="removeCover()" title="Remover" style="color: #ff6b6b;">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+
+        <input type="file" id="listCoverInput" (change)="onCoverSelected($event)" accept="image/*" hidden>
+      </div>
+
+      <div class="form-group">
+        <label>Nome da Lista <span style="color: red">*</span></label>
+        <!-- Adicionei 'required' e validação visual -->
+        <input 
+          type="text" 
+          [(ngModel)]="newList.title" 
+          placeholder="Ex: Livros para chorar..."
+          [class.invalid]="!newList.title && titleTouched"
+          (blur)="titleTouched = true"
+        >
+      </div>
+      <div class="form-group">
+        <label>Descrição (Opcional)</label>
+        <textarea [(ngModel)]="newList.description" placeholder="Sobre o que é esta coleção?"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeCreateModal()">Cancelar</button>
+      <!-- BOTÃO DESATIVADO SE NÃO TIVER TÍTULO -->
+      <button 
+        class="btn-save" 
+        (click)="createList()" 
+        [disabled]="!newList.title || newList.title.trim() === ''"
+      >
+        Criar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: ADICIONAR LIVRO (BUSCA) -->
+<div class="modal-overlay" *ngIf="isAddBookModalOpen">
+  <div class="modal-card wide-modal"> <!-- wide-modal para ser mais largo -->
+    <div class="modal-header">
+      <h3>Adicionar Livro à Lista</h3>
+      <button class="close-btn" (click)="closeAddBookModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Barra de Busca -->
+      <div class="search-bar">
+        <input 
+          type="text" 
+          placeholder="Digite o título, autor ou ISBN..." 
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="searchBooks()"
+        >
+        <button class="btn-search" (click)="searchBooks()" [disabled]="isSearching">
+          <i class="fa-solid" [class.fa-magnifying-glass]="!isSearching" [class.fa-spinner]="isSearching" [class.fa-spin]="isSearching"></i>
+        </button>
+      </div>
+
+      <!-- Resultados -->
+      <div class="search-results">
+        <p *ngIf="searchResults.length === 0 && !isSearching" class="hint-text">
+          Pesquise para encontrar livros...
+        </p>
+
+        <div class="result-item" *ngFor="let book of searchResults" (click)="addBookToList(book)">
+          <img [src]="book.volumeInfo.imageLinks?.smallThumbnail || 'assets/no-cover.png'">
+          <div class="result-info">
+            <strong>{{ book.volumeInfo.title }}</strong>
+            <span>{{ book.volumeInfo.authors?.join(', ') }}</span>
+          </div>
+          <i class="fa-solid fa-plus-circle add-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

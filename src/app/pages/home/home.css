@@ -1,0 +1,496 @@
+.home-tabs-bar {
+  display: flex;
+  background: white;
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  gap: 5px;
+}
+
+.home-tabs-bar button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.home-tabs-bar button:hover {
+  background-color: #f5f7fa;
+  color: var(--unifor-blue);
+}
+
+.home-tabs-bar button.active {
+  background-color: var(--unifor-blue);
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 59, 113, 0.2);
+}
+
+/* Animação suave ao trocar de aba */
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Layout Principal de 3 Colunas */
+.main-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px; /* Esquerda Fixa | Centro Flex | Direita Fixa */
+  gap: 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 90px; /* Espaço da navbar */
+}
+
+/* --- COLUNA ESQUERDA (Menu) --- */
+.profile-card {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.avatar-circle img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--unifor-blue);
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.side-menu a {
+  display: block;
+  padding: 12px 20px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 30px;
+  margin-bottom: 5px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.side-menu a:hover, .side-menu a.active {
+  background-color: #eef4fb; /* Azulzinho bem claro */
+  color: var(--unifor-blue);
+}
+
+.side-menu i {
+  margin-right: 10px;
+  width: 20px;
+}
+
+/* --- COLUNA ESQUERDA (Menu Fixo) --- */
+.sidebar-left {
+  position: sticky;
+  top: 90px; 
+  height: fit-content; 
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* --- COLUNA CENTRAL (Feed) --- */
+/* Correção do estouro horizontal */
+.feed-content {
+  min-width: 0; /* OBRIGATÓRIO: Impede que o grid estoure */
+  width: 100%;
+}
+
+.create-post {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+.mini-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.create-post input {
+  flex: 1;
+  border: none;
+  background: #f0f2f5;
+  padding: 12px 20px;
+  border-radius: 20px;
+  outline: none;
+}
+
+.btn-primary-small {
+  background: var(--unifor-blue);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 15px;
+  padding-left: 10px;
+}
+
+/* CARD DO POST */
+.post-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.user-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mini-avatar-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd; 
+}
+
+.username {
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.action {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.time {
+  font-size: 0.8rem;
+  color: #999;
+  margin-left: 5px;
+}
+
+.post-body {
+  display: flex;
+  gap: 15px;
+}
+
+.book-cover-small {
+  width: 80px;
+  min-width: 80px;
+  height: 120px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.book-cover-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-review h4 {
+  margin-bottom: 2px;
+  color: var(--unifor-blue);
+}
+
+.book-author {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.post-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 30px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.post-actions button:hover {
+  color: var(--unifor-blue);
+}
+
+/* --- COLUNA DIREITA (Trending) --- */
+.trending-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.trending-box h4 {
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mini-cover {
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 2/3;
+  background: #eee;
+}
+
+.mini-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.active-users {
+  display: flex;
+  gap: 10px;
+}
+
+.user-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr; 
+  }
+  .sidebar-left, .sidebar-right {
+    display: none; 
+  }
+}
+
+/* --- LEIA-ME (NETFLIX STYLE REFINADO) --- */
+
+.netflix-container {
+  padding-bottom: 50px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.catalog-header {
+  margin-bottom: 30px;
+}
+
+.netflix-main-title {
+  font-size: 1.8rem;
+  color: var(--unifor-blue);
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.pill:hover {
+  background: #f0f0f0;
+  border-color: #bbb;
+}
+
+.pill.active {
+  background: var(--unifor-blue); 
+  color: white;
+  border-color: var(--unifor-blue);
+}
+
+.category-row {
+  margin-bottom: 40px;
+  position: relative; 
+}
+
+.row-title {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 700;
+  padding-left: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.row-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background-color: var(--unifor-orange);
+  margin-right: 10px;
+  border-radius: 2px;
+}
+
+/* Wrapper do carrossel para posicionar as setas */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* O Container Mágico do Scroll */
+.carousel-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto; 
+  overflow-y: hidden;
+  padding: 20px 5px;
+  scroll-behavior: smooth;
+  width: 100%;
+  
+  /* ESCONDER A BARRA */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE */
+}
+
+/* Chrome, Safari */
+.carousel-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent;
+}
+
+/* O Card do Livro */
+.carousel-item {
+  flex: 0 0 auto; 
+  width: 140px;   
+  height: 210px;  
+  border-radius: 6px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+  cursor: pointer;
+  position: relative;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.carousel-item:hover {
+  transform: scale(1.15); 
+  z-index: 100; 
+}
+
+.carousel-item:first-child {
+  transform-origin: left center;
+}
+
+.carousel-item:last-child {
+  transform-origin: right center;
+}
+
+/* Estilo das Setas */
+.scroll-btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente escuro */
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1000; /* Acima de tudo */
+  opacity: 0; 
+  transition: opacity 0.3s, background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Só mostra as setas quando passa o mouse na linha */
+.carousel-wrapper:hover .scroll-btn {
+  opacity: 1;
+}
+
+.scroll-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+
+.scroll-btn.left {
+  left: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.scroll-btn.right {
+  right: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}

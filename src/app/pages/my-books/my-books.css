@@ -1,0 +1,203 @@
+/* Reutilizando layout base */
+.main-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr; /* Sem coluna direita aqui, foco total nos livros */
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 90px;
+}
+
+/* Sidebar (Cópia simplificada da Home) */
+.sidebar-left {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+.profile-card {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.avatar-circle img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--unifor-blue);
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.side-menu a {
+  display: block;
+  padding: 12px 20px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 30px;
+  margin-bottom: 5px;
+  transition: all 0.2s;
+}
+
+.side-menu a:hover, .side-menu a.active {
+  background-color: #eef4fb;
+  color: var(--unifor-blue);
+}
+
+.side-menu i { margin-right: 10px; width: 20px; }
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.library-header {
+  margin-bottom: 30px;
+}
+
+.library-header h2 {
+  color: var(--unifor-blue);
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+/* Abas Personalizadas */
+.library-tabs {
+  display: flex;
+  gap: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.library-tabs button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.library-tabs button span {
+  background: #eee;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.library-tabs button.active {
+  background: var(--unifor-blue);
+  color: white;
+}
+
+.library-tabs button.active span {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+/* Grid de Livros */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 30px;
+}
+
+.book-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+}
+
+.book-cover {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-info h3 {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author, .status-text {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Barra de Progresso (Para aba 'Lendo') */
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: rgba(0,0,0,0.5);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--unifor-orange); /* Laranja Unifor */
+}
+
+/* Badge de Nota (Para aba 'Lidos') */
+.rating-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: #FFD700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  backdrop-filter: blur(4px);
+}
+
+/* Animação */
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sidebar-left { display: none; }
+}
+
+/* 
+### Passo 6: Atualizar Links na Home
+Não se esqueça de ir no `src/app/pages/home/home.html` e atualizar o link "Meus Livros" no menu lateral para apontar para a nova página:
+
+```html
+<a routerLink="/my-books" style="cursor: pointer;">
+  <i class="fa-solid fa-book-open"></i> Meus Livros
+</a> */

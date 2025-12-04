@@ -1,0 +1,95 @@
+<app-navbar></app-navbar>
+
+<div class="main-layout">
+  
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="avatar-circle">
+        <img src="images/moema.png" alt="Perfil">
+      </div>
+      <h3>Aluno Unifor</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+    </div>
+    
+    <nav class="side-menu">
+      <a routerLink="/home" class="menu-item">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      <a routerLink="/my-books" class="menu-item">
+        <i class="fa-solid fa-book-open"></i> Meus Livros
+      </a>
+      <a routerLink="/lists" class="menu-item">
+        <i class="fa-solid fa-list"></i> Listas
+      </a>
+      <a routerLink="/friends" class="menu-item">
+        <i class="fa-solid fa-user-group"></i> Amigos
+      </a>
+      <!-- Novo Item Ativo -->
+      <a routerLink="/community" class="menu-item active">
+        <i class="fa-solid fa-users-rectangle"></i> Comunidade
+      </a>
+    </nav>
+  </aside>
+
+  <main class="community-content">
+    
+    <div class="community-header">
+      <h2>Comunidade Unifor</h2>
+      
+      <div class="tabs">
+        <button [class.active]="activeTab === 'clubes'" (click)="setTab('clubes')">
+          Clubes de Leitura
+        </button>
+        <button [class.active]="activeTab === 'eventos'" (click)="setTab('eventos')">
+          Eventos
+        </button>
+      </div>
+    </div>
+
+    <!-- CLUBES DE LEITURA -->
+    <div *ngIf="activeTab === 'clubes'" class="grid-container fade-in">
+      <div class="club-card" *ngFor="let club of clubs">
+        <div class="card-image" [style.background-image]="'url(' + club.image + ')'">
+          <span class="member-badge"><i class="fa-solid fa-users"></i> {{ club.members }} membros</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ club.name }}</h3>
+          <p class="description">{{ club.description }}</p>
+          <div class="card-footer">
+            <span class="meeting-info"><i class="fa-regular fa-calendar"></i> Próximo: {{ club.nextMeeting }}</span>
+            <button class="btn-join" (click)="joinClub(club)">Participar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTOS -->
+    <div *ngIf="activeTab === 'eventos'" class="grid-container fade-in">
+      <div class="event-card" *ngFor="let event of events">
+        <div class="date-box">
+          <span class="day">{{ event.date.split(' ')[0] }}</span>
+          <span class="month">{{ event.date.split(' ')[1] }}</span>
+        </div>
+        <div class="event-image" [style.background-image]="'url(' + event.image + ')'"></div>
+        <div class="event-details">
+          <h3>{{ event.title }}</h3>
+          <p class="time"><i class="fa-regular fa-clock"></i> {{ event.time }}</p>
+          <p class="location"><i class="fa-solid fa-location-dot"></i> {{ event.location }}</p>
+          <button class="btn-register" (click)="registerEvent(event)">Inscrever-se</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sidebar Direita (Opcional, pode remover se quiser mais espaço) -->
+  <aside class="sidebar-right">
+    <div class="trending-box">
+      <h4>Quadro de Avisos</h4>
+      <p style="font-size: 0.9rem; color: #666; line-height: 1.5;">
+        A Biblioteca Central estará fechada neste feriado. Retornamos na segunda-feira!
+      </p>
+    </div>
+  </aside>
+
+</div>

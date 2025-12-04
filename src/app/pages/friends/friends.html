@@ -1,0 +1,180 @@
+<app-navbar></app-navbar>
+
+<div class="main-layout">
+  
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="avatar-circle">
+        <img src="images/moema.png" alt="Perfil">
+      </div>
+      <h3>Aluno Unifor</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+    </div>
+    
+    <nav class="side-menu">
+      <a routerLink="/home" class="menu-item">
+        <i class="fa-solid fa-house"></i> Início
+      </a>
+      <a routerLink="/mybooks" class="menu-item">
+        <i class="fa-solid fa-book-open"></i> Meus Livros
+      </a>
+      <a routerLink="/lists" class="menu-item">
+        <i class="fa-solid fa-list"></i> Listas
+      </a>
+      <a routerLink="/friends" class="menu-item active">
+        <i class="fa-solid fa-user-group"></i> Amigos
+      </a>
+    </nav>
+  </aside>
+
+  <main class="friends-content">
+    
+    <div class="friends-header">
+      <div class="header-text">
+        <h2>Minha Comunidade</h2>
+        <p>{{ friends.length }} conexões ativas</p>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Botão Novo Amigo -->
+        <button class="btn-add-friend" (click)="openAddModal()" title="Adicionar Amigo">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Buscar nos meus amigos..." [(ngModel)]="searchQuery">
+        </div>
+      </div>
+    </div>
+
+    <div class="friends-grid">
+      <div class="friend-card" *ngFor="let friend of filteredFriends">
+        <div class="friend-avatar">
+          <img [src]="friend.avatar" [alt]="friend.name">
+          <span class="status-dot" [class.online]="friend.status === 'Online'"></span>
+        </div>
+        
+        <div class="friend-info">
+          <h3>{{ friend.name }}</h3>
+          <span class="username">Matrícula: {{ friend.matricula }}</span>
+          
+          <p class="course"><i class="fa-solid fa-graduation-cap"></i> {{ friend.course }}</p>
+          <p class="status-text" *ngIf="friend.status !== 'Online' && friend.status !== 'Offline'">
+            <i class="fa-solid fa-book-open"></i> {{ friend.status }}
+          </p>
+        </div>
+
+        <div class="friend-actions">
+          <button class="btn-icon" title="Enviar Mensagem">
+            <i class="fa-regular fa-comment"></i>
+          </button>
+          <button class="btn-icon delete" (click)="confirmRemove(friend)" title="Desfazer Amizade">
+            <i class="fa-solid fa-user-minus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredFriends.length === 0">
+      <i class="fa-solid fa-user-group"></i>
+      <p>Nenhum amigo encontrado.</p>
+    </div>
+
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="suggestions-box">
+      <h4>Sugestões para você</h4>
+      
+      <div class="suggestion-item" *ngFor="let person of suggestions">
+        <img [src]="person.avatar" class="sug-avatar">
+        <div class="sug-info">
+          <strong>{{ person.name }}</strong>
+          <span>{{ person.mutuals }} amigos em comum</span>
+        </div>
+        <button class="btn-add" (click)="addFriend(person)">
+          <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </div>
+
+      <div class="view-more">
+        <a href="#">Ver tudo</a>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- MODAL DE EXCLUSÃO -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen">
+  <div class="modal-card delete-modal">
+    <div class="modal-header-center">
+      <h3>Desfazer Amizade?</h3>
+    </div>
+    
+    <div class="modal-body-center" *ngIf="friendToDelete">
+      <img [src]="friendToDelete.avatar" class="delete-avatar">
+      <p>Você tem certeza que deseja remover <strong>{{ friendToDelete.name }}</strong> da sua lista de amigos?</p>
+      <span class="warning-text">Essa ação não pode ser desfeita.</span>
+    </div>
+
+    <div class="modal-footer-center">
+      <button class="btn-cancel-flat" (click)="cancelRemove()">Manter Amigo</button>
+      <button class="btn-delete-confirm" (click)="deleteFriend()">Sim, Remover</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE ADICIONAR AMIGO -->
+<div class="modal-overlay" *ngIf="isAddModalOpen">
+  <div class="modal-card wide-modal">
+    <div class="modal-header">
+      <h3>Encontrar Colegas</h3>
+      <button class="close-btn" (click)="closeAddModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Barra de Busca -->
+      <div class="search-bar-modal">
+        <input 
+          type="text" 
+          placeholder="Digite nome ou matrícula..." 
+          [(ngModel)]="newFriendQuery"
+          (keyup.enter)="searchNewFriends()"
+        >
+        <button class="btn-search-modal" (click)="searchNewFriends()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+
+      <!-- Resultados -->
+      <div class="search-results-list">
+        <p *ngIf="newFriendResults.length === 0 && newFriendQuery" class="hint-text">
+          Nenhum aluno encontrado.
+        </p>
+        <p *ngIf="newFriendResults.length === 0 && !newFriendQuery" class="hint-text">
+          Pesquise para encontrar pessoas da Unifor.
+        </p>
+
+        <div class="user-result-item" *ngFor="let user of newFriendResults">
+          <img [src]="user.avatar" class="user-result-avatar">
+          <div class="user-result-info">
+            <strong>{{ user.name }}</strong>
+            <span>{{ user.course }} • {{ user.matricula }}</span>
+          </div>
+          
+          <button 
+            class="btn-send-request" 
+            [class.sent]="user.requestSent" 
+            (click)="sendRequest(user)"
+            [disabled]="user.requestSent"
+          >
+            <span *ngIf="!user.requestSent"><i class="fa-solid fa-user-plus"></i> Adicionar</span>
+            <span *ngIf="user.requestSent"><i class="fa-solid fa-check"></i> Enviado</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<app-navbar></app-navbar>
+
+<div class="details-container" *ngIf="book; else loadingTpl">
+  
+  <!-- Fundo desfocado (Backdrop) -->
+  <div class="backdrop" 
+       [style.background-image]="'url(' + (book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png') + ')'">
+  </div>
+
+  <div class="content-wrapper">
+    
+    <!-- Coluna da Capa -->
+    <div class="cover-column">
+      <div class="main-cover">
+        <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'" alt="Capa">
+      </div>
+      
+      <!-- Ações Rápidas -->
+      <div class="action-buttons">
+        <button class="action-btn"><i class="fa-regular fa-heart"></i> Curtir</button>
+        <button class="action-btn"><i class="fa-regular fa-bookmark"></i> Lista</button>
+        <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+      </div>
+    </div>
+
+    <!-- Coluna das Informações -->
+    <div class="info-column">
+      <h1 class="book-title">{{ book.volumeInfo.title }}</h1>
+      <p class="book-meta">
+        <span class="author">por <strong>{{ book.volumeInfo.authors?.join(', ') }}</strong></span>
+        <span class="pages" *ngIf="book.volumeInfo.pageCount"> • {{ book.volumeInfo.pageCount }} páginas</span>
+      </p>
+
+      <!-- Caixa de Avaliação -->
+      <div class="review-box">
+        <h3>O que você achou?</h3>
+        
+        <!-- Estrelas Interativas -->
+        <div class="stars-input">
+          <i *ngFor="let star of [1,2,3,4,5]" 
+             class="fa-star"
+             [class.fa-solid]="star <= (hoverRating || userRating)"
+             [class.fa-regular]="star > (hoverRating || userRating)"
+             [class.active]="star <= userRating"
+             (mouseenter)="hoverRating = star"
+             (mouseleave)="hoverRating = 0"
+             (click)="setRating(star)">
+          </i>
+        </div>
+
+        <textarea placeholder="Escreva sua resenha sobre este livro..." [(ngModel)]="userReview"></textarea>
+        
+        <button class="btn-save" (click)="saveReview()">Publicar Resenha</button>
+      </div>
+
+      <!-- Sinopse -->
+      <div class="synopsis">
+        <h3>Sinopse</h3>
+        <!-- [innerHTML] é usado porque a API do Google às vezes manda tags <p> ou <br> no texto -->
+        <div [innerHTML]="book.volumeInfo.description || 'Sem descrição disponível.'"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-screen">
+    <i class="fa-solid fa-circle-notch fa-spin"></i> Carregando livro...
+  </div>
+</ng-template>

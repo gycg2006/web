@@ -1,0 +1,76 @@
+<app-navbar></app-navbar>
+
+<div class="edit-container">
+  <div class="edit-card">
+    
+    <div class="header">
+      <h2>Editar Perfil</h2>
+      <p>Mantenha seus dados atualizados para a comunidade.</p>
+    </div>
+
+    <form (ngSubmit)="saveProfile()">
+      
+      <!-- SEÇÃO DA FOTO (Com truque do input file) -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <!-- Mostra o preview (se tiver) ou a imagem atual -->
+          <img [src]="previewAvatar || user.avatar" alt="Avatar">
+          
+          <!-- Botão de Câmera sobreposto -->
+          <label for="fileInput" class="camera-btn">
+            <i class="fa-solid fa-camera"></i>
+          </label>
+        </div>
+        
+        <!-- Input escondido -->
+        <input 
+          type="file" 
+          id="fileInput" 
+          (change)="onFileSelected($event)" 
+          accept="image/*" 
+          hidden
+        >
+        <span class="avatar-hint">Toque na câmera para alterar</span>
+      </div>
+
+      <!-- CAMPOS DO FORMULÁRIO -->
+      <div class="form-grid">
+        
+        <div class="form-group full-width">
+          <label>Nome Completo</label>
+          <input type="text" [(ngModel)]="user.name" name="name" class="input-field">
+        </div>
+
+        <div class="form-group">
+          <label>Matrícula (Não editável)</label>
+          <input type="text" [value]="user.matricula" disabled class="input-field disabled">
+        </div>
+
+        <div class="form-group">
+          <label>Curso</label>
+          <select [(ngModel)]="user.course" name="course" class="input-field">
+            <option>Ciência da Computação</option>
+            <option>Engenharia de Software</option>
+            <option>Direito</option>
+            <option>Medicina</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Bio (Sobre você)</label>
+          <textarea [(ngModel)]="user.bio" name="bio" rows="4" class="input-field" placeholder="Escreva um pouco sobre seus gostos literários..."></textarea>
+          <span class="char-count">{{ user.bio.length }}/200</span>
+        </div>
+
+      </div>
+
+      <!-- BOTÕES DE AÇÃO -->
+      <div class="actions">
+        <button type="button" class="btn-cancel" (click)="cancel()">Cancelar</button>
+        <button type="submit" class="btn-save">Salvar Alterações</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
