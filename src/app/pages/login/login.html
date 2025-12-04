@@ -7,11 +7,43 @@
         
         <span>Use sua matrícula para registro</span>
         
-        <input type="text" placeholder="Nome Completo" class="input-field" (input)="limparErros()" />
-        <input type="text" placeholder="Matrícula" class="input-field" (input)="limparErros()" />
-        <input type="password" placeholder="Senha" class="input-field" (input)="limparErros()" />
+        <input 
+          type="text" 
+          placeholder="Matrícula" 
+          class="input-field" 
+          [(ngModel)]="matricula"
+          name="matricula-signup"
+          maxlength="7"
+          (input)="limparErros()" 
+        />
         
-        <button class="btn-primary" type="button" (click)="mostrarErro('Funcionalidade de cadastro em breve!')">CADASTRAR</button>
+        <div class="password-wrapper">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            placeholder="Senha" 
+            class="input-field"
+            [(ngModel)]="senha"
+            name="senha-signup"
+            maxlength="8"
+            (input)="limparErros()"
+          />
+          <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+            <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+          </button>
+        </div>
+        
+        <p class="error-msg" *ngIf="msgErro">
+          <i class="fa-solid fa-circle-exclamation"></i> {{ msgErro }}
+        </p>
+        
+        <button 
+          class="btn-primary" 
+          type="button" 
+          (click)="fazerCadastro()"
+          [disabled]="isLoading"
+        >
+          {{ isLoading ? 'CADASTRANDO...' : 'CADASTRAR' }}
+        </button>
       </form>
     </div>
 
@@ -55,7 +87,14 @@
         
         <a href="#" class="forgot-pass">Esqueceu sua senha?</a>
 
-        <button type="button" class="btn-primary" (click)="fazerLogin()">ACESSAR</button>
+        <button 
+          type="button" 
+          class="btn-primary" 
+          (click)="fazerLogin()"
+          [disabled]="isLoading"
+        >
+          {{ isLoading ? 'ACESSANDO...' : 'ACESSAR' }}
+        </button>
         <a href="#" class="return-link">Retornar ao portal Unifor</a>
       </form>
     </div>

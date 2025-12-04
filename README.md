@@ -1,59 +1,110 @@
 # UniforLibSocial
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+Aplicação social de leitura desenvolvida com Angular e Spring Boot.
 
-## Development server
+## 🚀 Início Rápido
 
-To start a local development server, run:
+### Pré-requisitos
+
+- **Node.js** 18+ e npm
+- **Java** 17+
+- **Maven** 3.6+
+- **Docker** e Docker Compose (para MySQL)
+
+### 1. Subir o MySQL com Docker
 
 ```bash
+docker-compose up -d
+```
+
+Isso irá criar e iniciar o container MySQL automaticamente.
+
+### 2. Iniciar o Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+O backend estará disponível em: `http://localhost:8080`
+
+### 3. Iniciar o Frontend
+
+```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O frontend estará disponível em: `http://localhost:4200`
 
-## Code scaffolding
+## 📚 Documentação
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **[DOCKER.md](DOCKER.md)** - Guia completo sobre Docker e MySQL
+- **[backend/README.md](backend/README.md)** - Documentação do backend
+- **[backend/SETUP.md](backend/SETUP.md)** - Guia de configuração detalhado
 
-```bash
-ng generate component component-name
+## 🛠️ Tecnologias
+
+### Frontend
+- Angular 21
+- TypeScript
+- RxJS
+
+### Backend
+- Spring Boot 3.2.0
+- Spring Security
+- JWT Authentication
+- MySQL 8.0
+- BCrypt para hash de senhas
+
+## 🔐 Segurança
+
+- ✅ Hash de senhas com BCrypt
+- ✅ Autenticação JWT
+- ✅ CORS configurado
+- ✅ Validação de dados
+
+## 📝 Estrutura do Projeto
+
+```
+unifor-lib-social/
+├── backend/              # Backend Spring Boot
+│   ├── src/
+│   └── pom.xml
+├── src/                 # Frontend Angular
+│   ├── app/
+│   └── environments/
+├── docker-compose.yml   # Configuração Docker MySQL
+└── README.md
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🐳 Docker
+
+O MySQL pode ser executado via Docker usando:
 
 ```bash
-ng generate --help
+docker-compose up -d
 ```
 
-## Building
+Para mais informações, consulte [DOCKER.md](DOCKER.md).
 
-To build the project run:
+## 📖 Funcionalidades
 
-```bash
-ng build
-```
+- ✅ Login e Cadastro
+- ✅ Autenticação JWT
+- ✅ Gerenciamento de livros
+- ✅ Prateleiras (Lendo, Lidos, Quero Ler)
+- ✅ Listas personalizadas
+- ✅ Sistema de amizades (em desenvolvimento)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🤝 Contribuindo
 
-## Running unit tests
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 📄 Licença
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Este projeto é parte de um trabalho acadêmico.

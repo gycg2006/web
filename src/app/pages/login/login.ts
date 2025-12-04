@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 // Se o seu Logo também for 'logo.ts', a classe deve ser 'Logo'
 import { Logo } from '../../components/logo/logo'; // Verifique se é Logo ou LogoComponent no seu arquivo
 import { Mascot } from '../../components/mascot/mascot'; // <--- Importando a classe 'Mascot'
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,9 +24,13 @@ export class Login {
   matricula: string = '';
   senha: string = '';
   msgErro: string = '';
-  imgMoema: string = '/images/moema.svg'; 
+  imgMoema: string = '/images/moema.svg';
+  isLoading: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) {}
 
   togglePanel(isSignUp: boolean) {
     this.isSignUpActive = isSignUp;
@@ -42,7 +47,6 @@ export class Login {
   }
 
   fazerLogin() {
-
     const matriculaValida = /^\d{7}$/.test(this.matricula);
 
     if (!matriculaValida) {
@@ -57,8 +61,87 @@ export class Login {
       return;
     }
 
-    console.log('Login Sucesso:', this.matricula);
-    this.router.navigate(['/home']);
+    this.isLoading = true;
+    this.authService.login(this.matricula, this.senha).subscribe({
+      next: (user) => {
+        this.isLoading = false;
+        console.log('Login Sucesso:', user);
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        // Extrair mensagem de erro do backend ou usar mensagem padrão
+        let errorMessage = 'Matrícula ou senha incorretos. Verifique suas credenciais.';
+        
+        if (error.error) {
+          // Se o erro vem como string JSON
+          if (typeof error.error === 'string') {
+            try {
+              const parsed = JSON.parse(error.error);
+              errorMessage = parsed.error || errorMessage;
+            } catch {
+              // Se não conseguir parsear, usa a string como está
+              errorMessage = error.error;
+            }
+          } 
+          // Se o erro vem como objeto
+          else if (error.error.error) {
+            errorMessage = error.error.error;
+          }
+        }
+        
+        this.mostrarErro(errorMessage);
+      }
+    });
+  }
+
+  fazerCadastro() {
+    const matriculaValida = /^\d{7}$/.test(this.matricula);
+
+    if (!matriculaValida) {
+      this.mostrarErro('A matrícula deve ter exatamente 7 números.');
+      return;
+    }
+
+    const senhaValida = /^\d{8}$/.test(this.senha);
+
+    if (!senhaValida) {
+      this.mostrarErro('A senha deve ter exatamente 8 números.');
+      return;
+    }
+
+    this.isLoading = true;
+    this.authService.register(this.matricula, this.senha).subscribe({
+      next: (user) => {
+        this.isLoading = false;
+        console.log('Cadastro Sucesso:', user);
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        // Extrair mensagem de erro do backend ou usar mensagem padrão
+        let errorMessage = 'Erro ao fazer cadastro. Tente novamente.';
+        
+        if (error.error) {
+          // Se o erro vem como string JSON
+          if (typeof error.error === 'string') {
+            try {
+              const parsed = JSON.parse(error.error);
+              errorMessage = parsed.error || errorMessage;
+            } catch {
+              // Se não conseguir parsear, usa a string como está
+              errorMessage = error.error;
+            }
+          } 
+          // Se o erro vem como objeto
+          else if (error.error.error) {
+            errorMessage = error.error.error;
+          }
+        }
+        
+        this.mostrarErro(errorMessage);
+      }
+    });
   }
 
   mostrarErro(mensagem: string) {

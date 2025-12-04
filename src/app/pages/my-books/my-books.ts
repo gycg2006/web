@@ -4,6 +4,8 @@ import { Navbar } from '../../components/navbar/navbar';
 import { BookService } from '../../core/services/book';
 import { Book } from '../../core/models/book.model';
 import { RouterModule } from '@angular/router';
+import { ApiService } from '../../core/services/api.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-my-books',
@@ -19,30 +21,81 @@ export class MyBooks implements OnInit {
   wantToRead: Book[] = []; // Quero ler (Wishlist)
 
   activeTab: 'lendo' | 'lidos' | 'quero-ler' = 'lendo';
+  isLoading: boolean = false;
 
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.carregarEstante();
   }
 
   carregarEstante() {
-    // Simulando dados do banco: buscamos livros reais para popular as listas
-    
-    // 1. Lendo Agora (Ex: Livros técnicos atuais)
-    this.bookService.searchBooks('angular development').subscribe(res => {
-      this.reading = (res.items || []).slice(0, 2); // Pega 2 livros
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      console.error('Usuário não autenticado');
+      return;
+    }
+
+    this.isLoading = true;
+    const userId = currentUser.id;
+
+    // Carregar livros da API
+    this.apiService.getUserBooksByStatus(userId, 'LENDO').subscribe({
+      next: (userBooks) => {
+        this.reading = userBooks.map(ub => this.convertUserBookToBook(ub));
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar livros lendo:', error);
+        this.isLoading = false;
+      }
     });
 
-    // 2. Lidos (Ex: Clássicos)
-    this.bookService.searchBooks('machado de assis').subscribe(res => {
-      this.read = (res.items || []).slice(0, 5); // Pega 5 livros
+    this.apiService.getUserBooksByStatus(userId, 'LIDO').subscribe({
+      next: (userBooks) => {
+        this.read = userBooks.map(ub => this.convertUserBookToBook(ub));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar livros lidos:', error);
+      }
     });
 
-    // 3. Quero Ler (Ex: Ficção)
-    this.bookService.searchBooks('duna').subscribe(res => {
-      this.wantToRead = (res.items || []).slice(0, 8); // Pega 8 livros
+    this.apiService.getUserBooksByStatus(userId, 'QUERO_LER').subscribe({
+      next: (userBooks) => {
+        this.wantToRead = userBooks.map(ub => this.convertUserBookToBook(ub));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar livros desejados:', error);
+      }
     });
+  }
+
+  private convertUserBookToBook(userBook: any): Book {
+    const bookDTO = userBook.book;
+    return {
+      id: bookDTO.googleBooksId,
+      volumeInfo: {
+        title: bookDTO.title,
+        authors: bookDTO.authors || [],
+        publisher: bookDTO.publisher,
+        publishedDate: bookDTO.publishedDate,
+        description: bookDTO.description,
+        pageCount: bookDTO.pageCount,
+        categories: bookDTO.categories || [],
+        averageRating: bookDTO.averageRating,
+        ratingsCount: bookDTO.ratingsCount,
+        imageLinks: {
+          thumbnail: bookDTO.thumbnailUrl || '',
+          smallThumbnail: bookDTO.smallThumbnailUrl || ''
+        },
+        previewLink: bookDTO.previewLink,
+        infoLink: bookDTO.infoLink
+      }
+    };
   }
 
   setTab(tab: 'lendo' | 'lidos' | 'quero-ler') {
