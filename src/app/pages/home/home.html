@@ -9,10 +9,10 @@
     
     <div class="profile-card">
       <div class="avatar-circle">
-        <img src="images/moema.png" alt="Perfil">
+        <img [src]="currentUser?.fotoPerfil || 'images/moema.png'" [alt]="currentUser?.nome || 'Perfil'">
       </div>
-      <h3>Aluno Unifor</h3>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+      <h3>{{ currentUser?.nome || 'Aluno Unifor' }}</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">{{ currentUser?.matricula || '' }}</p> 
     </div>
     
     <nav class="side-menu">
@@ -52,54 +52,67 @@
     <div *ngIf="activeTab === 'feed'" class="tab-content fade-in">
       
       <div class="create-post">
-        <img src="images/moema.png" class="mini-avatar" alt="Eu">
-        <input type="text" placeholder="Qual livro você leu recentemente?">
-        <button class="btn-primary-small">Postar</button>
+        <img [src]="currentUser?.fotoPerfil || 'images/moema.png'" class="mini-avatar" alt="Eu">
+        <input 
+          type="text" 
+          placeholder="Qual livro você leu recentemente?" 
+          [(ngModel)]="newPostContent"
+          [disabled]="isCreatingPost">
+        <button 
+          class="btn-primary-small" 
+          (click)="createPost()"
+          [disabled]="isCreatingPost">
+          <span *ngIf="!isCreatingPost">Postar</span>
+          <span *ngIf="isCreatingPost"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+        </button>
       </div>
 
       <h3 class="section-title">Atualizações da Comunidade</h3>
 
-      <div *ngIf="books.length === 0" style="text-align: center; padding: 20px; color: #999;">
+      <div *ngIf="isLoadingPosts" style="text-align: center; padding: 20px; color: #999;">
         <i class="fa-solid fa-circle-notch fa-spin"></i> Carregando feed...
       </div>
 
+      <div *ngIf="!isLoadingPosts && posts.length === 0" style="text-align: center; padding: 20px; color: #999;">
+        <p>Nenhum post ainda. Seja o primeiro a postar!</p>
+      </div>
+
       <div class="posts-list">
-        <div class="post-card" *ngFor="let book of books">
+        <div class="post-card" *ngFor="let post of posts">
           <div class="post-header">
             <div class="user-info">
-              <div class="mini-avatar-bg"></div>
+              <img [src]="post.userAvatar || 'images/moema.png'" class="mini-avatar" [alt]="post.userName">
               <div>
-                <span class="username">Estudante de TI</span>
-                <span class="action">avaliou um livro</span>
-                <span class="time">há 2h</span>
+                <span class="username">{{ post.userName }}</span>
+                <span class="action">postou</span>
+                <span class="time">{{ formatTime(post.createdAt) }}</span>
               </div>
             </div>
-            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
           </div>
 
           <div class="post-body">
-            <div class="book-cover-small" 
-                 [routerLink]="['/book', book.id]" 
-                 style="cursor: pointer;"
-                 title="Ver detalhes">
-              <img [src]="book.volumeInfo.imageLinks?.thumbnail || 'assets/no-cover.png'" alt="Capa">
-            </div>
-
-            <div class="book-review">
-              <h4 [routerLink]="['/book', book.id]" style="cursor: pointer;">
-                {{ book.volumeInfo.title }}
+            <div class="book-review" *ngIf="post.bookCover">
+              <div class="book-cover-small" 
+                   [routerLink]="['/book', post.bookId]" 
+                   style="cursor: pointer;"
+                   title="Ver detalhes">
+                <img [src]="post.bookCover || 'assets/no-cover.png'" alt="Capa">
+              </div>
+              <h4 [routerLink]="['/book', post.bookId]" style="cursor: pointer;">
+                {{ post.bookTitle }}
               </h4>
-              <p class="book-author">de {{ book.volumeInfo.authors?.join(', ') }}</p>
-              <p class="review-text">
-                "Uma leitura fundamental para a área. O conteúdo é denso mas muito bem explicado. Recomendo para quem está pagando as cadeiras do ciclo básico!"
-              </p>
             </div>
+            <p class="review-text">{{ post.content }}</p>
+            <img *ngIf="post.imageUrl" [src]="post.imageUrl" style="max-width: 100%; border-radius: 8px; margin-top: 10px;" alt="Imagem do post">
           </div>
 
           <div class="post-actions">
-            <button><i class="fa-regular fa-heart"></i> Curtir</button>
+            <button (click)="likePost(post)" [class.liked]="post.liked">
+              <i [class]="post.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i> 
+              {{ post.likeCount || 0 }}
+            </button>
             <button><i class="fa-regular fa-comment"></i> Comentar</button>
-            <button><i class="fa-solid fa-bookmark"></i> Salvar</button>
+            <button (click)="savePost(post)"><i class="fa-solid fa-bookmark"></i> Salvar</button>
           </div>
         </div>
       </div>
@@ -216,7 +229,7 @@
       <h4>Populares na Unifor</h4>
       <div class="mini-grid">
         <div class="mini-cover" 
-             *ngFor="let book of books | slice:0:4"
+             *ngFor="let book of popularBooks | slice:0:4"
              [routerLink]="['/book', book.id]"
              style="cursor: pointer;">
           <img [src]="book.volumeInfo.imageLinks?.smallThumbnail || 'assets/no-cover.png'">

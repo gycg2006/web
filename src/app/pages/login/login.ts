@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { Logo } from '../../components/logo/logo'; // Verifique se é Logo ou LogoComponent no seu arquivo
 import { Mascot } from '../../components/mascot/mascot'; // <--- Importando a classe 'Mascot'
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,8 @@ export class Login {
 
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly toastService: ToastService
   ) {}
 
   togglePanel(isSignUp: boolean) {
@@ -65,6 +67,7 @@ export class Login {
     this.authService.login(this.matricula, this.senha).subscribe({
       next: (user) => {
         this.isLoading = false;
+        this.toastService.success('Login realizado com sucesso!');
         console.log('Login Sucesso:', user);
         this.router.navigate(['/home']);
       },
@@ -90,6 +93,7 @@ export class Login {
           }
         }
         
+        this.toastService.error(errorMessage);
         this.mostrarErro(errorMessage);
       }
     });
@@ -114,6 +118,7 @@ export class Login {
     this.authService.register(this.matricula, this.senha).subscribe({
       next: (user) => {
         this.isLoading = false;
+        this.toastService.success('Cadastro realizado com sucesso!');
         console.log('Cadastro Sucesso:', user);
         this.router.navigate(['/home']);
       },
@@ -139,6 +144,7 @@ export class Login {
           }
         }
         
+        this.toastService.error(errorMessage);
         this.mostrarErro(errorMessage);
       }
     });

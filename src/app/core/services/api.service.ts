@@ -141,5 +141,116 @@ export class ApiService {
       headers: this.getHeaders()
     });
   }
+
+  // Posts endpoints
+  createPost(userId: number, content: string, imageUrl?: string, bookId?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${userId}`, { content, imageUrl, bookId }, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getFeed(userId: number, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get(`${this.apiUrl}/posts/feed/${userId}?page=${page}&size=${size}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getUserPosts(userId: number, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get(`${this.apiUrl}/posts/user/${userId}?page=${page}&size=${size}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  likePost(postId: number, userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/like/${userId}`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  unlikePost(postId: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posts/${postId}/like/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // Book Like/Save endpoints
+  likeBook(bookId: string, userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/books/${bookId}/like/${userId}`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  unlikeBook(bookId: string, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/books/${bookId}/like/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  isBookLiked(bookId: string, userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/books/${bookId}/like/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getBookLikeCount(bookId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/books/${bookId}/likes/count`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  saveBook(bookId: string, userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/books/${bookId}/save/${userId}`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  unsaveBook(bookId: string, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/books/${bookId}/save/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  isBookSaved(bookId: string, userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/books/${bookId}/save/${userId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // Friendship endpoints
+  sendFriendRequest(userId: number, friendId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friendships/${userId}/request/${friendId}`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  acceptFriendRequest(userId: number, friendId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friendships/${userId}/accept/${friendId}`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  removeFriend(userId: number, friendId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/friendships/${userId}/remove/${friendId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getFriends(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friendships/${userId}/friends`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getPendingRequests(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friendships/${userId}/pending`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  searchUsers(query: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friendships/search?query=${encodeURIComponent(query)}`, {
+      headers: this.getHeaders()
+    });
+  }
 }
 

@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Navbar } from '../../components/navbar/navbar';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../core/services/api.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-friends',
@@ -11,73 +14,62 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './friends.html',
   styleUrls: ['./friends.css']
 })
-export class Friends {
+export class Friends implements OnInit {
   
   searchQuery = '';
   
   // Controle de Modais
   isDeleteModalOpen = false;
-  isAddModalOpen = false; // Novo modal
+  isAddModalOpen = false;
   
   friendToDelete: any = null;
   
   // Variáveis para Busca de Novos Amigos
   newFriendQuery = '';
   newFriendResults: any[] = [];
+  isLoading = false;
 
-  // Lista de Amigos Atuais
-  friends = [
-    { 
-      name: 'Carlos Eduardo', 
-      matricula: '2310101', 
-      avatar: 'https://i.pravatar.cc/150?u=carlos', 
-      course: 'Engenharia de Software',
-      status: 'Lendo "Duna"' 
-    },
-    { 
-      name: 'Ana Clara', 
-      matricula: '2310202', 
-      avatar: 'https://i.pravatar.cc/150?u=ana', 
-      course: 'Ciência da Computação',
-      status: 'Online' 
-    },
-    { 
-      name: 'Pedro Henrique', 
-      matricula: '2310303', 
-      avatar: 'https://i.pravatar.cc/150?u=pedro', 
-      course: 'Direito',
-      status: 'Offline' 
-    },
-    { 
-      name: 'Mariana Costa', 
-      matricula: '2310404', 
-      avatar: 'https://i.pravatar.cc/150?u=mari', 
-      course: 'Psicologia',
-      status: 'Lendo "O Pequeno Príncipe"' 
-    },
-    { 
-      name: 'Lucas Lima', 
-      matricula: '2310505', 
-      avatar: 'https://i.pravatar.cc/150?u=lucas', 
-      course: 'Ciência da Computação',
-      status: 'Online' 
+  // Lista de Amigos Atuais (agora vem do backend)
+  friends: any[] = [];
+  suggestions: any[] = [];
+
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private toastService: ToastService
+  ) {}
+
+  ngOnInit() {
+    this.loadFriends();
+  }
+
+  loadFriends() {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
     }
-  ];
 
-  // Banco de Dados Simulado de TODOS os alunos (para busca)
-  allUsersDB = [
-    { name: 'João Silva', matricula: '2310999', avatar: 'https://i.pravatar.cc/150?u=joao', course: 'Arquitetura', requestSent: false },
-    { name: 'Maria Oliveira', matricula: '2310888', avatar: 'https://i.pravatar.cc/150?u=maria', course: 'Jornalismo', requestSent: false },
-    { name: 'Ricardo Santos', matricula: '2310777', avatar: 'https://i.pravatar.cc/150?u=ricardo', course: 'Direito', requestSent: false },
-    { name: 'Sofia Lima', matricula: '2310666', avatar: 'https://i.pravatar.cc/150?u=sofia', course: 'Medicina', requestSent: false },
-    { name: 'Bruno Costa', matricula: '2310555', avatar: 'https://i.pravatar.cc/150?u=bruno', course: 'Cinema', requestSent: false }
-  ];
-
-  suggestions = [
-    { name: 'Fernanda Souza', matricula: '2310606', avatar: 'https://i.pravatar.cc/150?u=fernanda', mutuals: 5 },
-    { name: 'Roberto Silva', matricula: '2310707', avatar: 'https://i.pravatar.cc/150?u=roberto', mutuals: 2 },
-    { name: 'Julia Martins', matricula: '2310808', avatar: 'https://i.pravatar.cc/150?u=julia', mutuals: 8 }
-  ];
+    this.isLoading = true;
+    this.apiService.getFriends(currentUser.id).subscribe({
+      next: (friends) => {
+        this.friends = friends.map((friend: any) => ({
+          id: friend.id,
+          name: friend.nome || friend.name,
+          matricula: friend.matricula,
+          avatar: friend.fotoPerfil || friend.avatar || 'https://i.pravatar.cc/150',
+          course: friend.curso || 'Curso não informado',
+          status: 'Online' // Pode ser melhorado depois
+        }));
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar amigos:', error);
+        this.toastService.error('Erro ao carregar lista de amigos');
+        this.isLoading = false;
+      }
+    });
+  }
 
   get filteredFriends() {
     return this.friends.filter(f => 
@@ -87,12 +79,22 @@ export class Friends {
   }
 
   addFriend(person: any) {
-    this.friends.push({
-      ...person,
-      course: 'Novo Aluno',
-      status: 'Novo Amigo!'
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
+    }
+
+    this.apiService.sendFriendRequest(currentUser.id, person.id).subscribe({
+      next: () => {
+        this.toastService.success('Solicitação de amizade enviada!');
+        person.requestSent = true;
+      },
+      error: (error) => {
+        const errorMessage = error.error?.error || 'Erro ao enviar solicitação de amizade';
+        this.toastService.error(errorMessage);
+      }
     });
-    this.suggestions = this.suggestions.filter(p => p !== person);
   }
 
   confirmRemove(friend: any) {
@@ -106,10 +108,25 @@ export class Friends {
   }
 
   deleteFriend() {
-    if (this.friendToDelete) {
-      this.friends = this.friends.filter(f => f !== this.friendToDelete);
-      this.cancelRemove();
+    if (!this.friendToDelete) return;
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
     }
+
+    this.apiService.removeFriend(currentUser.id, this.friendToDelete.id).subscribe({
+      next: () => {
+        this.toastService.success('Amizade removida com sucesso');
+        this.friends = this.friends.filter(f => f.id !== this.friendToDelete.id);
+        this.cancelRemove();
+      },
+      error: (error) => {
+        const errorMessage = error.error?.error || 'Erro ao remover amizade';
+        this.toastService.error(errorMessage);
+      }
+    });
   }
 
   // --- LÓGICA DO MODAL DE ADICIONAR ---
@@ -129,17 +146,32 @@ export class Friends {
       return;
     }
 
-    const query = this.newFriendQuery.toLowerCase();
-    
-    // Filtra do banco simulado quem NÃO é amigo ainda
-    this.newFriendResults = this.allUsersDB.filter(user => 
-      (user.name.toLowerCase().includes(query) || user.matricula.includes(query)) &&
-      !this.friends.some(f => f.matricula === user.matricula)
-    );
+    this.isLoading = true;
+    this.apiService.searchUsers(this.newFriendQuery).subscribe({
+      next: (users) => {
+        // Filtra usuários que já são amigos
+        const friendIds = this.friends.map(f => f.id);
+        this.newFriendResults = users
+          .filter((user: any) => !friendIds.includes(user.id))
+          .map((user: any) => ({
+            id: user.id,
+            name: user.nome || user.name,
+            matricula: user.matricula,
+            avatar: user.fotoPerfil || user.avatar || 'https://i.pravatar.cc/150',
+            course: user.curso || 'Curso não informado',
+            requestSent: false
+          }));
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao buscar usuários:', error);
+        this.toastService.error('Erro ao buscar usuários');
+        this.isLoading = false;
+      }
+    });
   }
 
   sendRequest(user: any) {
-    user.requestSent = true;
-    // Aqui você chamaria o backend para criar a notificação
+    this.addFriend(user);
   }
 }

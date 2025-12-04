@@ -6,10 +6,10 @@
   <aside class="sidebar-left">
     <div class="profile-card">
       <div class="avatar-circle">
-        <img src="images/moema.png" alt="Perfil">
+        <img [src]="currentUser?.fotoPerfil || 'images/moema.png'" [alt]="currentUser?.nome || 'Perfil'">
       </div>
-      <h3>Aluno Unifor</h3>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+      <h3>{{ currentUser?.nome || 'Aluno Unifor' }}</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">{{ currentUser?.matricula || '' }}</p> 
     </div>
     
     <nav class="side-menu">
@@ -19,10 +19,10 @@
       <a routerLink="/my-books" class="menu-item active"> <!-- Ativo aqui -->
         <i class="fa-solid fa-book-open"></i> Meus Livros
       </a>
-      <a href="/lists" class="menu-item">
+      <a routerLink="/lists" class="menu-item">
         <i class="fa-solid fa-list"></i> Listas
       </a>
-      <a href="/friends" class="menu-item">
+      <a routerLink="/friends" class="menu-item">
         <i class="fa-solid fa-user-group"></i> Amigos
       </a>
     </nav>

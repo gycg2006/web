@@ -6,6 +6,7 @@ import { Book } from '../../core/models/book.model';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-my-books',
@@ -22,12 +23,16 @@ export class MyBooks implements OnInit {
 
   activeTab: 'lendo' | 'lidos' | 'quero-ler' = 'lendo';
   isLoading: boolean = false;
+  currentUser: any = null;
 
   constructor(
     private bookService: BookService,
     private apiService: ApiService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private toastService: ToastService
+  ) {
+    this.currentUser = this.authService.getCurrentUser();
+  }
 
   ngOnInit() {
     this.carregarEstante();
@@ -100,5 +105,45 @@ export class MyBooks implements OnInit {
 
   setTab(tab: 'lendo' | 'lidos' | 'quero-ler') {
     this.activeTab = tab;
+  }
+
+  updateBookStatus(book: Book, newStatus: 'QUERO_LER' | 'LENDO' | 'LIDO') {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
+    }
+
+    this.apiService.updateBookStatus(currentUser.id, book.id, newStatus).subscribe({
+      next: () => {
+        this.toastService.success('Status do livro atualizado!');
+        this.carregarEstante(); // Recarregar estante
+      },
+      error: () => {
+        this.toastService.error('Erro ao atualizar status do livro');
+      }
+    });
+  }
+
+  removeBook(book: Book) {
+    if (!confirm('Tem certeza que deseja remover este livro da sua estante?')) {
+      return;
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
+    }
+
+    this.apiService.removeBookFromUser(currentUser.id, book.id).subscribe({
+      next: () => {
+        this.toastService.success('Livro removido da estante');
+        this.carregarEstante(); // Recarregar estante
+      },
+      error: () => {
+        this.toastService.error('Erro ao remover livro');
+      }
+    });
   }
 }

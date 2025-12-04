@@ -37,7 +37,7 @@ public class User {
     @Column(length = 200)
     private String bio;
     
-    @Column(name = "foto_perfil")
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
     
     @Column(name = "created_at")
@@ -58,6 +58,18 @@ public class User {
     
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
     private List<Friendship> friendshipsAsUser2 = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookLike> bookLikes = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookSave> bookSaves = new ArrayList<>();
     
     @PrePersist
     protected void onCreate() {

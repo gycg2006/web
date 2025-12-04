@@ -76,7 +76,11 @@
       </div>
     </div>
 
-    <div class="empty-state" *ngIf="filteredFriends.length === 0">
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px; color: #999;">
+      <i class="fa-solid fa-circle-notch fa-spin"></i> Carregando amigos...
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && filteredFriends.length === 0">
       <i class="fa-solid fa-user-group"></i>
       <p>Nenhum amigo encontrado.</p>
     </div>
@@ -99,7 +103,7 @@
       </div>
 
       <div class="view-more">
-        <a href="#">Ver tudo</a>
+        <a (click)="openAddModal()" style="cursor: pointer;">Ver tudo</a>
       </div>
     </div>
   </aside>

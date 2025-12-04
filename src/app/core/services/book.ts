@@ -26,7 +26,7 @@ export class BookService {
 
   getBookById(id: string): Observable<Book> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.get<Book>(url)
+    return this.http.get<any>(url)
       .pipe(
         catchError(error => {
           console.error(`Erro no ID ${id}, usando Mock`, error);

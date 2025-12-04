@@ -5,21 +5,21 @@
   <aside class="sidebar-left">
     <div class="profile-card">
       <div class="avatar-circle">
-        <img src="images/moema.png" alt="Perfil">
+        <img [src]="currentUser?.fotoPerfil || 'images/moema.png'" [alt]="currentUser?.nome || 'Perfil'">
       </div>
-      <h3>Aluno Unifor</h3>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+      <h3>{{ currentUser?.nome || 'Aluno Unifor' }}</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">{{ currentUser?.matricula || '' }}</p> 
     </div>
     
     <nav class="side-menu">
       <a routerLink="/home" class="menu-item">
         <i class="fa-solid fa-house"></i> Início
       </a>
-      <a href="/mybooks"><i class="fa-solid fa-book-open"></i> Meus Livros</a>
+      <a routerLink="/mybooks" class="menu-item"><i class="fa-solid fa-book-open"></i> Meus Livros</a>
       <a routerLink="/lists" class="menu-item active">
         <i class="fa-solid fa-list"></i> Listas
       </a>
-      <a href="/friends" class="menu-item">
+      <a routerLink="/friends" class="menu-item">
         <i class="fa-solid fa-user-group"></i> Amigos
       </a>
     </nav>
@@ -63,10 +63,16 @@
           
           <div class="details-header">
             <h4>Livros nesta lista</h4>
-            <!-- Botão para abrir busca -->
-            <button class="btn-add-small" (click)="openAddBookModal(i, $event)">
-              <i class="fa-solid fa-plus"></i> Adicionar Livro
-            </button>
+            <div class="details-actions">
+              <!-- Botão para abrir busca -->
+              <button class="btn-add-small" (click)="openAddBookModal(i, $event)">
+                <i class="fa-solid fa-plus"></i> Adicionar Livro
+              </button>
+              <!-- Botão para deletar lista -->
+              <button class="btn-delete-list" (click)="deleteList(i, $event)" title="Deletar Lista">
+                <i class="fa-solid fa-trash"></i> Deletar Lista
+              </button>
+            </div>
           </div>
 
           <div class="books-in-list" *ngIf="list.books.length > 0; else emptyList">

@@ -1,7 +1,9 @@
-import { Component, HostListener } from '@angular/core'; // <--- Adicione HostListener
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Logo } from '../logo/logo'; // ou LogoComponent
+import { Logo } from '../logo/logo';
+import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,10 +13,20 @@ import { Logo } from '../logo/logo'; // ou LogoComponent
   styleUrls: ['./navbar.css']
 })
 export class Navbar {
-  isHidden = false; // Controla se a barra está escondida
-  lastScrollTop = 0; // Guarda a posição anterior para comparar
+  isHidden = false;
+  lastScrollTop = 0;
+  currentUser: any = null;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private toastService: ToastService
+  ) {
+    this.currentUser = this.authService.getCurrentUser();
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
 
   // Escuta o evento de rolagem da janela
   @HostListener('window:scroll')
@@ -33,7 +45,7 @@ export class Navbar {
   }
 
   logout() {
-    console.log('Saindo...');
-    this.router.navigate(['/login']);
+    this.authService.logout();
+    this.toastService.info('Logout realizado com sucesso');
   }
 }

@@ -11,19 +11,19 @@
       <a routerLink="/home" routerLinkActive="active">
         <i class="fa-solid fa-house"></i> Início
       </a>
-      <a href="/mybooks"  routerLinkActive="active">
+      <a routerLink="/mybooks" routerLinkActive="active">
         <i class="fa-solid fa-book-open"></i> Meus Livros
       </a>
-      <a href="/community" class="inactive">
+      <a routerLink="/community" routerLinkActive="active">
         <i class="fa-solid fa-users"></i> Comunidade
       </a>
     </div>
 
     <div class="nav-profile">
       <div class="user-info" routerLink="/profile" style="cursor: pointer;">
-        <span class="user-name">Aluno</span>
+        <span class="user-name">{{ currentUser?.nome || 'Aluno' }}</span>
         <div class="avatar-circle">
-          <img src="/images/moema.png" alt="Avatar"> 
+          <img [src]="currentUser?.fotoPerfil || '/images/moema.png'" [alt]="currentUser?.nome || 'Avatar'"> 
         </div>
       </div>
       

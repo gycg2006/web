@@ -17,9 +17,40 @@
       
       <!-- Ações Rápidas -->
       <div class="action-buttons">
-        <button class="action-btn"><i class="fa-regular fa-heart"></i> Curtir</button>
-        <button class="action-btn"><i class="fa-regular fa-bookmark"></i> Lista</button>
-        <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+        <!-- Adicionar à Estante -->
+        <div class="shelf-actions" *ngIf="!isInShelf">
+          <button class="action-btn primary" (click)="addToShelf('QUERO_LER')">
+            <i class="fa-solid fa-bookmark"></i> Quero Ler
+          </button>
+          <button class="action-btn primary" (click)="addToShelf('LENDO')">
+            <i class="fa-solid fa-book-open"></i> Lendo
+          </button>
+        </div>
+        
+        <!-- Status Atual e Mudar Status -->
+        <div class="shelf-status" *ngIf="isInShelf">
+          <p class="current-status">Na sua estante: <strong>{{ getStatusLabel(bookStatus || '') }}</strong></p>
+          <div class="status-buttons">
+            <button 
+              class="action-btn" 
+              [class.active]="bookStatus === 'QUERO_LER'"
+              (click)="updateBookStatus('QUERO_LER')">
+              Quero Ler
+            </button>
+            <button 
+              class="action-btn" 
+              [class.active]="bookStatus === 'LENDO'"
+              (click)="updateBookStatus('LENDO')">
+              Lendo
+            </button>
+            <button 
+              class="action-btn" 
+              [class.active]="bookStatus === 'LIDO'"
+              (click)="updateBookStatus('LIDO')">
+              Lido
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -48,9 +79,21 @@
           </i>
         </div>
 
-        <textarea placeholder="Escreva sua resenha sobre este livro..." [(ngModel)]="userReview"></textarea>
+        <textarea 
+          placeholder="Escreva sua resenha sobre este livro..." 
+          [(ngModel)]="userReview"
+          [disabled]="!isInShelf">
+        </textarea>
         
-        <button class="btn-save" (click)="saveReview()">Publicar Resenha</button>
+        <button 
+          class="btn-save" 
+          (click)="saveReview()" 
+          [disabled]="!isInShelf || userRating === 0">
+          {{ isInShelf ? 'Publicar Resenha' : 'Adicione à estante para avaliar' }}
+        </button>
+        <p *ngIf="!isInShelf" class="hint-text" style="color: #666; font-size: 0.9rem; margin-top: 10px;">
+          <i class="fa-solid fa-info-circle"></i> Adicione este livro à sua estante para poder avaliá-lo
+        </p>
       </div>
 
       <!-- Sinopse -->
