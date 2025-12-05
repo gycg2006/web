@@ -144,6 +144,11 @@ export class Login {
           }
         }
         
+        // Melhorar mensagem para matrícula já cadastrada
+        if (errorMessage.toLowerCase().includes('matrícula') && errorMessage.toLowerCase().includes('cadastrada')) {
+          errorMessage = 'Esta matrícula já está cadastrada. Use outra matrícula ou faça login.';
+        }
+        
         this.toastService.error(errorMessage);
         this.mostrarErro(errorMessage);
       }

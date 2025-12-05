@@ -37,7 +37,10 @@ public class User {
     @Column(length = 200)
     private String bio;
     
-    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    @Column(length = 100)
+    private String curso;
+    
+    @Column(name = "foto_perfil", columnDefinition = "LONGTEXT")
     private String fotoPerfil;
     
     @Column(name = "created_at")

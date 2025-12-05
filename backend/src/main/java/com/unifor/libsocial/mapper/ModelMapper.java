@@ -11,14 +11,15 @@ public class ModelMapper {
     
     public UserDTO toUserDTO(User user) {
         if (user == null) return null;
-        return new UserDTO(
-            user.getId(),
-            user.getMatricula(),
-            user.getNome(),
-            user.getBio(),
-            user.getFotoPerfil(),
-            user.getCreatedAt()
-        );
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setMatricula(user.getMatricula());
+        dto.setNome(user.getNome());
+        dto.setBio(user.getBio());
+        dto.setCurso(user.getCurso());
+        dto.setFotoPerfil(user.getFotoPerfil());
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
     }
     
     public BookDTO toBookDTO(Book book) {

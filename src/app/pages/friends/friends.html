@@ -5,10 +5,10 @@
   <aside class="sidebar-left">
     <div class="profile-card">
       <div class="avatar-circle">
-        <img src="images/moema.png" alt="Perfil">
+        <img [src]="currentUser?.fotoPerfil || 'images/moema.png'" [alt]="currentUser?.nome || 'Perfil'">
       </div>
-      <h3>Aluno Unifor</h3>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">2310058</p> 
+      <h3>{{ currentUser?.nome || 'Aluno Unifor' }}</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">{{ currentUser?.matricula || '' }}</p> 
     </div>
     
     <nav class="side-menu">
@@ -23,6 +23,9 @@
       </a>
       <a routerLink="/friends" class="menu-item active">
         <i class="fa-solid fa-user-group"></i> Amigos
+      </a>
+      <a routerLink="/community" class="menu-item">
+        <i class="fa-solid fa-users-rectangle"></i> Comunidade
       </a>
     </nav>
   </aside>
@@ -44,6 +47,30 @@
         <div class="search-box">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" placeholder="Buscar nos meus amigos..." [(ngModel)]="searchQuery">
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLICITAÇÕES PENDENTES -->
+    <div *ngIf="pendingRequests.length > 0" class="pending-requests-section" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+      <h3 style="margin-bottom: 15px; color: var(--unifor-blue);">
+        <i class="fa-solid fa-bell"></i> Solicitações de Amizade ({{ pendingRequests.length }})
+      </h3>
+      <div class="pending-requests-grid" style="display: grid; gap: 15px;">
+        <div class="pending-request-card" *ngFor="let request of pendingRequests" style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <img [src]="request.avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+          <div style="flex: 1;">
+            <strong>{{ request.name }}</strong>
+            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Matrícula: {{ request.matricula }}</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-accept" (click)="acceptRequest(request)" style="padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              <i class="fa-solid fa-check"></i> Aceitar
+            </button>
+            <button class="btn-reject" (click)="rejectRequest(request)" style="padding: 8px 15px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              <i class="fa-solid fa-times"></i> Recusar
+            </button>
+          </div>
         </div>
       </div>
     </div>

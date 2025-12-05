@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Navbar } from '../../components/navbar/navbar';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-community',
@@ -10,9 +11,10 @@ import { RouterModule } from '@angular/router';
   templateUrl: './community.html',
   styleUrls: ['./community.css']
 })
-export class Community {
+export class Community implements OnInit {
   
   activeTab: 'clubes' | 'eventos' = 'clubes';
+  currentUser: any = null;
 
   // Mock de Clubes de Leitura
   clubs = [
@@ -69,6 +71,19 @@ export class Community {
       image: 'https://images.unsplash.com/photo-1544928147-79a77456a14e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3'
     }
   ];
+
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.currentUser = this.authService.getCurrentUser();
+    // Garantir que o conteúdo seja exibido ao carregar
+    this.activeTab = 'clubes';
+    // Forçar detecção de mudanças para garantir que o conteúdo seja renderizado
+    this.cdr.detectChanges();
+  }
 
   setTab(tab: 'clubes' | 'eventos') {
     this.activeTab = tab;

@@ -28,7 +28,7 @@ public class BookList {
     @Column(length = 1000)
     private String description;
     
-    @Column(name = "cover_image", length = 500)
+    @Column(name = "cover_image", columnDefinition = "LONGTEXT")
     private String coverImage;
     
     @Column(name = "created_at")

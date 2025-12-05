@@ -88,5 +88,9 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this.currentUserSubject.value !== null;
   }
+
+  updateCurrentUser(user: any) {
+    this.currentUserSubject.next(user);
+  }
 }
 

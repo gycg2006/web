@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Navbar } from '../../components/navbar/navbar';
 import { RouterModule } from '@angular/router';
@@ -49,7 +49,8 @@ export class Lists implements OnInit {
     private bookService: BookService,
     private apiService: ApiService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {
     this.currentUser = this.authService.getCurrentUser();
   }
@@ -82,11 +83,13 @@ export class Lists implements OnInit {
           }))
         }));
         this.isLoading = false;
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
       },
       error: (error) => {
         this.isLoading = false;
         this.toastService.error('Erro ao carregar listas');
         console.error('Erro ao carregar listas:', error);
+        this.cdr.detectChanges(); // Forçar detecção de mudanças mesmo em erro
       }
     });
   }
@@ -102,6 +105,10 @@ export class Lists implements OnInit {
 
   closeCreateModal() {
     this.isCreateModalOpen = false;
+    this.newList = { title: '', description: '', cover: 'assets/no-cover.png' };
+    this.previewCover = null;
+    this.rotationAngle = 0;
+    this.titleTouched = false;
   }
 
   onCoverSelected(event: any) {
@@ -147,12 +154,15 @@ export class Lists implements OnInit {
     this.apiService.createBookList(currentUser.id, listData).subscribe({
       next: (newList) => {
         this.toastService.success('Lista criada com sucesso!');
+        // Fechar modal automaticamente e limpar formulário
         this.closeCreateModal();
         this.loadLists(); // Recarregar listas
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
       },
       error: (error) => {
         const errorMessage = error.error?.error || 'Erro ao criar lista';
         this.toastService.error(errorMessage);
+        this.cdr.detectChanges(); // Forçar detecção de mudanças mesmo em erro
       }
     });
   }

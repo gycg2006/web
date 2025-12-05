@@ -29,7 +29,8 @@
       <a routerLink="/lists" style="cursor: pointer;">
         <i class="fa-solid fa-list"></i> Listas
       </a>
-      <a href="/friends"><i class="fa-solid fa-user-group"></i> Amigos</a>
+      <a routerLink="/friends" style="cursor: pointer;"><i class="fa-solid fa-user-group"></i> Amigos</a>
+      <a routerLink="/community" style="cursor: pointer;"><i class="fa-solid fa-users-rectangle"></i> Comunidade</a>
     </nav>
   </aside>
 
@@ -124,16 +125,16 @@
       <div class="catalog-header">
         <h2 class="netflix-main-title">Explorar Acervo</h2>
         <div class="filter-pills">
-          <button class="pill active">Tudo</button>
-          <button class="pill">Acadêmico</button>
-          <button class="pill">Literatura</button>
-          <button class="pill">TCCs</button>
-          <button class="pill">Artigos</button>
+          <button class="pill" [class.active]="activeFilter === 'tudo'" (click)="setFilter('tudo')">Tudo</button>
+          <button class="pill" [class.active]="activeFilter === 'academico'" (click)="setFilter('academico')">Acadêmico</button>
+          <button class="pill" [class.active]="activeFilter === 'literatura'" (click)="setFilter('literatura')">Literatura</button>
+          <button class="pill" [class.active]="activeFilter === 'tccs'" (click)="setFilter('tccs')">TCCs</button>
+          <button class="pill" [class.active]="activeFilter === 'artigos'" (click)="setFilter('artigos')">Artigos</button>
         </div>
       </div>
 
       <!-- Categoria 1: TI -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksTI.length > 0">
         <h4 class="row-title">Tecnologia & Inovação</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('ti', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -147,7 +148,7 @@
       </div>
 
       <!-- Categoria 2: Saúde -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksSaude.length > 0">
         <h4 class="row-title">Ciências da Saúde</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('saude', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -161,7 +162,7 @@
       </div>
 
       <!-- Categoria 3: Ficção -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksFiccao.length > 0">
         <h4 class="row-title">Mundos Fantásticos (Ficção)</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('ficcao', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -175,7 +176,7 @@
       </div>
 
       <!-- Categoria 4: Direito -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksDireito.length > 0">
         <h4 class="row-title">Ciências Jurídicas</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('direito', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -189,7 +190,7 @@
       </div>
 
       <!-- Categoria 5: História -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksHistoria.length > 0">
         <h4 class="row-title">História e Sociedade</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('historia', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -203,7 +204,7 @@
       </div>
 
       <!-- Categoria 6: Romance -->
-      <div class="category-row">
+      <div class="category-row" *ngIf="booksRomance.length > 0">
         <h4 class="row-title">Romance e Literatura</h4>
         <div class="carousel-wrapper">
           <button class="scroll-btn left" (click)="scrollCarousel('romance', -1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -234,16 +235,6 @@
              style="cursor: pointer;">
           <img [src]="book.volumeInfo.imageLinks?.smallThumbnail || 'assets/no-cover.png'">
         </div>
-      </div>
-    </div>
-
-    <div class="trending-box">
-      <h4>Leitores Ativos</h4>
-      <div class="active-users">
-        <div class="user-dot" style="background: #FF5722;"></div>
-        <div class="user-dot" style="background: #4CAF50;"></div>
-        <div class="user-dot" style="background: #2196F3;"></div>
-        <div class="user-dot" style="background: #9C27B0;"></div>
       </div>
     </div>
 

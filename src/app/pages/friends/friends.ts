@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Navbar } from '../../components/navbar/navbar';
 import { RouterModule } from '@angular/router';
@@ -32,15 +32,20 @@ export class Friends implements OnInit {
   // Lista de Amigos Atuais (agora vem do backend)
   friends: any[] = [];
   suggestions: any[] = [];
+  pendingRequests: any[] = [];
+  currentUser: any = null;
 
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.currentUser = this.authService.getCurrentUser();
     this.loadFriends();
+    this.loadPendingRequests();
   }
 
   loadFriends() {
@@ -62,11 +67,13 @@ export class Friends implements OnInit {
           status: 'Online' // Pode ser melhorado depois
         }));
         this.isLoading = false;
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
       },
       error: (error) => {
         console.error('Erro ao carregar amigos:', error);
         this.toastService.error('Erro ao carregar lista de amigos');
         this.isLoading = false;
+        this.cdr.detectChanges(); // Forçar detecção de mudanças mesmo em erro
       }
     });
   }
@@ -173,5 +180,70 @@ export class Friends implements OnInit {
 
   sendRequest(user: any) {
     this.addFriend(user);
+  }
+
+  loadPendingRequests() {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      return;
+    }
+
+    this.apiService.getPendingRequests(currentUser.id).subscribe({
+      next: (requests) => {
+        this.pendingRequests = requests.map((user: any) => ({
+          id: user.id,
+          name: user.nome || user.name,
+          matricula: user.matricula,
+          avatar: user.fotoPerfil || user.avatar || 'https://i.pravatar.cc/150',
+          course: user.curso || 'Curso não informado'
+        }));
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
+      },
+      error: (error) => {
+        console.error('Erro ao carregar solicitações pendentes:', error);
+        this.cdr.detectChanges(); // Forçar detecção de mudanças mesmo em erro
+      }
+    });
+  }
+
+  acceptRequest(request: any) {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
+    }
+
+    this.apiService.acceptFriendRequest(currentUser.id, request.id).subscribe({
+      next: () => {
+        this.toastService.success(`Você aceitou a solicitação de ${request.name}!`);
+        this.loadPendingRequests();
+        this.loadFriends(); // Recarregar lista de amigos
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
+      },
+      error: (error) => {
+        const errorMessage = error.error?.error || 'Erro ao aceitar solicitação';
+        this.toastService.error(errorMessage);
+      }
+    });
+  }
+
+  rejectRequest(request: any) {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Usuário não autenticado');
+      return;
+    }
+
+    this.apiService.removeFriend(currentUser.id, request.id).subscribe({
+      next: () => {
+        this.toastService.success('Solicitação recusada');
+        this.loadPendingRequests();
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
+      },
+      error: (error) => {
+        const errorMessage = error.error?.error || 'Erro ao recusar solicitação';
+        this.toastService.error(errorMessage);
+      }
+    });
   }
 }

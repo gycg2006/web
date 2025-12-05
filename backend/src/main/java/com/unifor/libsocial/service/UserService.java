@@ -92,6 +92,7 @@ public class UserService {
         
         if (userDTO.getNome() != null) user.setNome(userDTO.getNome());
         if (userDTO.getBio() != null) user.setBio(userDTO.getBio());
+        if (userDTO.getCurso() != null) user.setCurso(userDTO.getCurso());
         if (userDTO.getFotoPerfil() != null) user.setFotoPerfil(userDTO.getFotoPerfil());
         
         User updatedUser = userRepository.save(user);

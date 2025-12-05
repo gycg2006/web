@@ -55,6 +55,7 @@ export class ProfileEdit implements OnInit {
         next: (userData) => {
           this.user.name = userData.nome || this.user.name;
           this.user.bio = userData.bio || '';
+          this.user.course = userData.curso || '';
           this.user.avatar = userData.fotoPerfil || this.user.avatar;
         },
         error: () => {
@@ -105,6 +106,7 @@ export class ProfileEdit implements OnInit {
     const userData = {
       nome: this.user.name,
       bio: this.user.bio,
+      curso: this.user.course,
       fotoPerfil: this.user.avatar
     };
 
@@ -118,11 +120,14 @@ export class ProfileEdit implements OnInit {
         if (currentUser) {
           currentUser.nome = updatedUser.nome;
           currentUser.bio = updatedUser.bio;
+          currentUser.curso = updatedUser.curso;
           currentUser.fotoPerfil = updatedUser.fotoPerfil;
           localStorage.setItem('currentUser', JSON.stringify({
             user: currentUser,
             token: this.authService.getToken()
           }));
+          // Atualizar o observable também
+          this.authService.updateCurrentUser(currentUser);
         }
         
         setTimeout(() => {

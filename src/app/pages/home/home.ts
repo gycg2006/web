@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +24,15 @@ export class Home implements OnInit {
   // Livros populares (para sidebar)
   popularBooks: Book[] = [];
   
-  // Categorias do Leia-me
+  // Categorias do Leia-me (todos os livros carregados)
+  allBooksTI: Book[] = [];
+  allBooksSaude: Book[] = [];
+  allBooksDireito: Book[] = [];
+  allBooksFiccao: Book[] = [];
+  allBooksRomance: Book[] = [];
+  allBooksHistoria: Book[] = [];
+  
+  // Livros filtrados (baseado no activeFilter)
   booksTI: Book[] = [];
   booksSaude: Book[] = [];
   booksDireito: Book[] = [];
@@ -34,6 +42,9 @@ export class Home implements OnInit {
 
   // Controle de Abas
   activeTab: 'feed' | 'catalogo' = 'feed';
+
+  // Filtro do catálogo (Leia-me)
+  activeFilter: 'tudo' | 'academico' | 'literatura' | 'tccs' | 'artigos' = 'tudo';
 
   // Dados do usuário
   currentUser: any = null;
@@ -46,12 +57,25 @@ export class Home implements OnInit {
     private bookService: BookService,
     private authService: AuthService,
     private apiService: ApiService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    // Usar observable para garantir que o usuário esteja disponível
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      if (user && user.id && this.activeTab === 'feed') {
+        this.carregarFeed();
+      }
+    });
+    
+    // Tentar carregar imediatamente também
     this.currentUser = this.authService.getCurrentUser();
-    this.carregarFeed();
+    if (this.currentUser && this.currentUser.id) {
+      this.carregarFeed();
+    }
+    
     this.carregarCatalogo();
     this.carregarLivrosPopulares();
   }
@@ -79,11 +103,13 @@ export class Home implements OnInit {
           liked: post.isLiked !== undefined ? post.isLiked : post.liked
         }));
         this.isLoadingPosts = false;
+        this.cdr.detectChanges(); // Forçar detecção de mudanças
       },
       error: (err) => {
         console.error('Erro ao carregar feed:', err);
         this.toastService.error('Erro ao carregar feed');
         this.isLoadingPosts = false;
+        this.cdr.detectChanges(); // Forçar detecção de mudanças mesmo em erro
       }
     });
   }
@@ -163,16 +189,127 @@ export class Home implements OnInit {
   }
 
   carregarCatalogo() {
-    this.bookService.searchBooks('computação').subscribe(res => this.booksTI = res.items || []);
-    this.bookService.searchBooks('medicina').subscribe(res => this.booksSaude = res.items || []);
-    this.bookService.searchBooks('direito').subscribe(res => this.booksDireito = res.items || []);
-    this.bookService.searchBooks('ficção científica').subscribe(res => this.booksFiccao = res.items || []);
-    this.bookService.searchBooks('romance').subscribe(res => this.booksRomance = res.items || []);
-    this.bookService.searchBooks('história do brasil').subscribe(res => this.booksHistoria = res.items || []);
+    this.bookService.searchBooks('computação').subscribe(res => {
+      this.allBooksTI = res.items || [];
+      this.aplicarFiltro();
+    });
+    this.bookService.searchBooks('medicina').subscribe(res => {
+      this.allBooksSaude = res.items || [];
+      this.aplicarFiltro();
+    });
+    this.bookService.searchBooks('direito').subscribe(res => {
+      this.allBooksDireito = res.items || [];
+      this.aplicarFiltro();
+    });
+    this.bookService.searchBooks('ficção científica').subscribe(res => {
+      this.allBooksFiccao = res.items || [];
+      this.aplicarFiltro();
+    });
+    this.bookService.searchBooks('romance').subscribe(res => {
+      this.allBooksRomance = res.items || [];
+      this.aplicarFiltro();
+    });
+    this.bookService.searchBooks('história do brasil').subscribe(res => {
+      this.allBooksHistoria = res.items || [];
+      this.aplicarFiltro();
+    });
+  }
+
+  aplicarFiltro() {
+    // Aplicar filtro baseado no activeFilter
+    if (this.activeFilter === 'tudo') {
+      // Mostrar todos os livros
+      this.booksTI = this.allBooksTI;
+      this.booksSaude = this.allBooksSaude;
+      this.booksDireito = this.allBooksDireito;
+      this.booksFiccao = this.allBooksFiccao;
+      this.booksRomance = this.allBooksRomance;
+      this.booksHistoria = this.allBooksHistoria;
+    } else if (this.activeFilter === 'academico') {
+      // Mostrar apenas livros acadêmicos (TI, Saúde, Direito)
+      this.booksTI = this.allBooksTI;
+      this.booksSaude = this.allBooksSaude;
+      this.booksDireito = this.allBooksDireito;
+      this.booksFiccao = [];
+      this.booksRomance = [];
+      this.booksHistoria = [];
+    } else if (this.activeFilter === 'literatura') {
+      // Mostrar apenas literatura (Ficção, Romance, História)
+      this.booksTI = [];
+      this.booksSaude = [];
+      this.booksDireito = [];
+      this.booksFiccao = this.allBooksFiccao;
+      this.booksRomance = this.allBooksRomance;
+      this.booksHistoria = this.allBooksHistoria;
+    } else if (this.activeFilter === 'tccs') {
+      // Para TCCs, podemos filtrar por palavras-chave específicas
+      const tccKeywords = ['tcc', 'trabalho de conclusão', 'monografia', 'dissertação'];
+      this.booksTI = this.allBooksTI.filter(book => 
+        tccKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword)
+        )
+      );
+      this.booksSaude = this.allBooksSaude.filter(book => 
+        tccKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword)
+        )
+      );
+      this.booksDireito = this.allBooksDireito.filter(book => 
+        tccKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword)
+        )
+      );
+      this.booksFiccao = [];
+      this.booksRomance = [];
+      this.booksHistoria = [];
+    } else if (this.activeFilter === 'artigos') {
+      // Para artigos, filtrar por palavras-chave
+      const artigoKeywords = ['artigo', 'paper', 'journal', 'revista', 'pesquisa'];
+      this.booksTI = this.allBooksTI.filter(book => 
+        artigoKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.categories?.some((cat: string) => cat.toLowerCase().includes(keyword))
+        )
+      );
+      this.booksSaude = this.allBooksSaude.filter(book => 
+        artigoKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.categories?.some((cat: string) => cat.toLowerCase().includes(keyword))
+        )
+      );
+      this.booksDireito = this.allBooksDireito.filter(book => 
+        artigoKeywords.some(keyword => 
+          book.volumeInfo.title?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.description?.toLowerCase().includes(keyword) ||
+          book.volumeInfo.categories?.some((cat: string) => cat.toLowerCase().includes(keyword))
+        )
+      );
+      this.booksFiccao = [];
+      this.booksRomance = [];
+      this.booksHistoria = [];
+    }
   }
 
   setTab(tab: 'feed' | 'catalogo') {
     this.activeTab = tab;
+    // Se mudar para catálogo, garantir que o conteúdo seja exibido
+    if (tab === 'catalogo' && this.booksTI.length === 0) {
+      this.carregarCatalogo();
+    }
+    // Se mudar para feed e ainda não carregou, tentar carregar
+    if (tab === 'feed' && this.posts.length === 0 && !this.isLoadingPosts) {
+      this.carregarFeed();
+    }
+  }
+
+  setFilter(filter: 'tudo' | 'academico' | 'literatura' | 'tccs' | 'artigos') {
+    this.activeFilter = filter;
+    this.aplicarFiltro();
   }
 
   scrollCarousel(categoryId: string, direction: number) {

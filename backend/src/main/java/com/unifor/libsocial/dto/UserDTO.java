@@ -14,6 +14,7 @@ public class UserDTO {
     private String matricula;
     private String nome;
     private String bio;
+    private String curso;
     private String fotoPerfil;
     private LocalDateTime createdAt;
 }
